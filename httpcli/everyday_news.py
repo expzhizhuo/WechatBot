@@ -172,6 +172,8 @@ def get_anquanke_news():
 
 def get_safety_news():
     output("GET safety News")
+    global news_list
+    news_list = ""
     get_secwiki_news()
     get_freebuf_news()
     get_qax_news()
