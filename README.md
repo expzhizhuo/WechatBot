@@ -3,9 +3,13 @@
 
 感谢@cixingguangming55555开发的server端以及集成化的hook利用程序，本项目是基于@cixingguangming55555大佬的开源项目进行的二开（玩法很多我慢慢开发吧，就这样吧）
 
+这里需要使用的微信版本是3.2.0.121版本，历史版本下载地址
+
+- https://github.com/tom-snow/wechat-windows-versions
+
 ## 部署教程
 
-安装ServerMain目录下面的微信3.2.0.121版本，然后再打开ServerMain/server中的微信DLL注入器V1.0.3.exe工具进行dll注入
+安装微信3.2.0.121版本，然后再打开ServerMain/server中的微信DLL注入器V1.0.3.exe工具进行dll注入
 
 ![image-20220915181623688](images/image-20220915181623688.png) 
 
@@ -13,7 +17,7 @@
 
 config.ini详解
 
-```json
+```
 [server]
 # 微信机器人服务端的配置文件
 ip = 127.0.0.1
@@ -80,3 +84,4 @@ python3 main.py
 ## 参考资料
 
 - https://github.com/Le0nsec/SecCrawler
+- https://github.com/tom-snow/wechat-windows-versions
