@@ -287,7 +287,7 @@ def handle_recv_msg(msgJson):
         elif keyword == "历史上的今天":
             msg = get_history_event()
             ws.send(send_msg(msg, roomid=roomid, wxid=senderid, nickname=nickname))
-        elif keyword == "今日咨询" and senderid == admin_id:
+        elif keyword == "今日资讯" and senderid == admin_id:
             msg = get_safety_news()
             ws.send(send_msg(msg, roomid=roomid, wxid=senderid, nickname=nickname))
 
