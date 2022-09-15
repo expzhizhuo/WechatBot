@@ -1,0 +1,180 @@
+import requests
+from httpcli.output import *
+import os
+import configparser
+from bs4 import BeautifulSoup
+import feedparser
+import re
+import time
+
+# 读取本地的配置文件
+current_path = os.path.dirname(__file__)
+config_path = os.path.join(current_path, "../config/config.ini")
+config = configparser.ConfigParser()  # 类实例化
+config.read(config_path, encoding="utf-8")
+secwiki_url = config.get("apiService", "secwiki_url")
+freebuf_url = config.get("apiService", "freebuf_url")
+qax_url = config.get("apiService", "qax_url")
+anquanke_url = config.get("apiService", "anquanke_url")
+
+news_list = ""
+# 全局header头
+headers = {
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.131 Safari/537.36",
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
+    "Accept-Language": "zh-CN,zh;q=0.9",
+    "Accept-Encoding": "gzip, deflate, br",
+    # 'Connection':'keep-alive',#默认时链接一次，多次爬取之后不能产生新的链接就会产生报错Max retries exceeded with url
+    "Upgrade-Insecure-Requests": "1",
+    "Pragma": "no-cache",
+    "Cache-Control": "no-cache",
+    "Connection": "close",  # 解决Max retries exceeded with url报错
+}
+
+
+# secwiki 源
+def get_secwiki_news():
+    global news_list
+    str_list = ""
+    news_list += "\n#secwiki\n"
+    try:
+        rs1 = feedparser.parse(secwiki_url)
+        html = rs1.entries[0]["summary_detail"]["value"]
+        soup = BeautifulSoup(html, "html.parser")
+        for k in soup.find_all("a"):
+            if "SecWiki" == k.string:
+                pass
+            elif time.strftime("%Y-%m-%d") in k.string:
+                link1 = "\n" + k.string + "\n" + k["href"] + "\n"
+                str_list += link1
+            else:
+                pass
+        if len(str_list) > 0:
+            news_list += str_list
+        else:
+            link6 = "今日暂无文章"
+            news_list += link6
+    except Exception as e:
+        output("secwiki ERROR：{}".format(e))
+        return "secwiki is no ok"
+
+
+# freebuf 源
+def get_freebuf_news():
+    global news_list
+    str_list = ""
+    news_list += "\n#freebuf\n"
+    try:
+        rs1 = feedparser.parse(freebuf_url)
+        length = len(rs1.entries)
+        for buf in range(length):
+            try:
+                if (
+                    time.strftime("%Y") in rs1.entries[buf]
+                    and time.strftime("%d") in rs1.entries[buf]
+                ):
+                    url_f = rs1.entries[buf]["link"]
+                    title_f = rs1.entries[buf]["title_detail"]["value"]
+                    link4 = "\n" + title_f + "\n" + url_f + "\n"
+                    str_list += link4
+                else:
+                    pass
+            except Exception as e:
+                output("ERROR：{}".format(e))
+                break
+        if len(str_list) > 0:
+            news_list += str_list
+        else:
+            link6 = "今日暂无文章"
+            news_list += link6
+    except Exception as e:
+        output("ERROR：freebuf {}".format(e))
+        return "freebuf is no ok"
+
+
+# 奇安信攻防社区
+def get_qax_news():
+    global news_list
+    str_list = ""
+    news_list += "\n#奇安信攻防社区\n"
+    try:
+        rs1 = feedparser.parse(qax_url)
+        length = len(rs1.entries)
+        for buf in range(length):
+            try:
+                if time.strftime("%Y-%m-%d") in rs1.entries[buf]:
+                    url_f = rs1.entries[buf]["link"]
+                    title_f = rs1.entries[buf]["title_detail"]["value"]
+                    link4 = "\n" + title_f + "\n" + url_f + "\n"
+                    str_list += link4
+                else:
+                    pass
+            except Exception as e:
+                output("ERROR：{}".format(e))
+                break
+        if len(str_list) > 0:
+            news_list += str_list
+        else:
+            link6 = "今日暂无文章"
+            news_list += link6
+    except Exception as e:
+        output("ERROR：奇安信攻防社区 {}".format(e))
+        return "qax is no ok"
+
+
+# 安全客
+def get_anquanke_news():
+    global news_list
+    str_list = ""
+    news_list += "\n#安全客\n"
+    try:
+        rs1 = requests.get(anquanke_url, timeout=5, verify=False)
+        rs1.encoding = "utf-8"
+        resp_text = (
+            rs1.text.replace("\xa9", "")
+            .replace("\n", "")
+            .replace("&gt;", "")
+            .replace(" ", "")
+            .replace("                        ", "")
+            .replace("                               ", "")
+        )
+        newlist = re.findall(
+            '<divclass="info-content"><divclass="title"><atarget="_blank"rel="noopenernoreferrer"href="(.*?)">(.*?)</a></div><divclass="tagshide-in-mobile-device">',
+            resp_text,
+            re.S,
+        )
+        timelist = re.findall(
+            '<istyle="margin-right:4px;"class="fafa-clock-o"></i>(.*?)</span></span>',
+            resp_text,
+            re.S,
+        )
+        for a in range(len(timelist)):
+            try:
+                if time.strftime("%Y-%m-%d") in timelist[a]:
+                    link1 = str(newlist[a][1])
+                    link2 = "https://www.anquanke.com" + str(newlist[a][0])
+                    link3 = "\n" + str(link1) + "\n" + str(link2) + "\n"
+                    str_list += link3
+                else:
+                    pass
+            except Exception as e:
+                output("ERROR：{}".format(e))
+                break
+        if len(str_list) > 0:
+            news_list += str_list
+        else:
+            link6 = "今日暂无文章"
+            news_list += link6
+    except Exception as e:
+        output("ERROR：安全客 {}".format(e))
+        return "安全客 is no ok"
+
+
+def get_safety_news():
+    output("GET safety News")
+    get_secwiki_news()
+    get_freebuf_news()
+    get_qax_news()
+    get_anquanke_news()
+    output("获取成功")
+    return news_list
