@@ -192,6 +192,7 @@ def destroy_all():
     return json.dumps(qs)
 
 
+# 消息发送函数
 def send_msg(msg, wxid="null", roomid=None, nickname="null"):
     if msg.endswith("tmp.png"):
         msg_type = PIC_MSG
@@ -264,11 +265,11 @@ def handle_recv_msg(msgJson):
         nickname = "null"
         senderid = msgJson["wxid"]  # 个人id
     nickname = get_member_nick(roomid, senderid)
-
     if roomid:
         if keyword == "test" and senderid == admin_id:
             msg = "Server is Onloine"
             ws.send(send_msg(msg, roomid=roomid, wxid=senderid, nickname=nickname))
+            # 这里是群消息的回复
         elif keyword == "鸡汤":
             msg = get_chicken_soup()
             ws.send(send_msg(msg, roomid=roomid, wxid=senderid, nickname=nickname))
@@ -332,3 +333,38 @@ ws = websocket.WebSocketApp(
 
 def bot():
     ws.run_forever()
+
+
+# 全局自动推送函数
+def auto_send_message_room(msg, roomid):
+    output("Websocket Sending Message")
+    # qs = {
+    #     "id": getid(),
+    #     "type": TXT_MSG,
+    #     "roomid": roomid,
+    #     "wxid": "null",
+    #     "content": msg,
+    #     "nickname": "null",
+    #     "ext": "null",
+    # }
+    # output(f"发送消息: {qs}")
+    # ws.send(json.dumps(qs))
+    data = {
+        "id": getid(),
+        "type": TXT_MSG,
+        "roomid": "null",
+        "content": msg,
+        "wxid": roomid,
+        "nickname": "null",
+        "ext": "null",
+    }
+    url = f"http://{ip}:{port}/api/sendtxtmsg"
+    res = requests.post(url, json={"para": data}, timeout=5)
+    if (
+        res.status_code == 200
+        and res.json()["status"] == "SUCCSESSED"
+        and res.json()["type"] == 555
+    ):
+        output("每日自动推送成功")
+    else:
+        output(f"Error：{res.text}")

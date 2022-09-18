@@ -36,7 +36,7 @@ headers = {
 def get_secwiki_news():
     global news_list
     str_list = ""
-    news_list += "\n#secwiki\n"
+    news_list += "#secwiki"
     try:
         rs1 = feedparser.parse(secwiki_url)
         html = rs1.entries[0]["summary_detail"]["value"]
@@ -52,7 +52,7 @@ def get_secwiki_news():
         if len(str_list) > 0:
             news_list += str_list
         else:
-            link6 = "今日暂无文章"
+            link6 = "\n今日暂无文章"
             news_list += link6
     except Exception as e:
         output("secwiki ERROR：{}".format(e))
@@ -63,7 +63,7 @@ def get_secwiki_news():
 def get_freebuf_news():
     global news_list
     str_list = ""
-    news_list += "\n#freebuf\n"
+    news_list += "\n#freebuf"
     try:
         rs1 = feedparser.parse(freebuf_url)
         length = len(rs1.entries)
@@ -85,7 +85,7 @@ def get_freebuf_news():
         if len(str_list) > 0:
             news_list += str_list
         else:
-            link6 = "今日暂无文章"
+            link6 = "\n今日暂无文章"
             news_list += link6
     except Exception as e:
         output("ERROR：freebuf {}".format(e))
@@ -96,7 +96,7 @@ def get_freebuf_news():
 def get_qax_news():
     global news_list
     str_list = ""
-    news_list += "\n#奇安信攻防社区\n"
+    news_list += "\n#奇安信攻防社区"
     try:
         rs1 = feedparser.parse(qax_url)
         length = len(rs1.entries)
@@ -115,7 +115,7 @@ def get_qax_news():
         if len(str_list) > 0:
             news_list += str_list
         else:
-            link6 = "今日暂无文章"
+            link6 = "\n今日暂无文章"
             news_list += link6
     except Exception as e:
         output("ERROR：奇安信攻防社区 {}".format(e))
@@ -126,7 +126,7 @@ def get_qax_news():
 def get_anquanke_news():
     global news_list
     str_list = ""
-    news_list += "\n#安全客\n"
+    news_list += "\n#安全客"
     try:
         rs1 = requests.get(anquanke_url, timeout=5, verify=False)
         rs1.encoding = "utf-8"
@@ -163,7 +163,7 @@ def get_anquanke_news():
         if len(str_list) > 0:
             news_list += str_list
         else:
-            link6 = "今日暂无文章"
+            link6 = "\n今日暂无文章"
             news_list += link6
     except Exception as e:
         output("ERROR：安全客 {}".format(e))
@@ -179,4 +179,5 @@ def get_safety_news():
     get_qax_news()
     get_anquanke_news()
     output("获取成功")
+    news_list += "\n\nCreated by zhizhuo \n{}".format(time.strftime("%Y-%m-%d %X"))
     return news_list
