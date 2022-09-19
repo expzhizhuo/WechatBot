@@ -44,7 +44,7 @@ def auto_push():
 def main():
     output("WechatBot Test")
     get_personal_info()
-    processed = Process(target=evening_paper_push, name="Auto push")
+    processed = Process(target=auto_push, name="Auto push")
     # 进程守护，主进程结束子进程也要结束
     processed.daemon = True
     processed.start()
