@@ -185,7 +185,7 @@ def get_girl_videos():
 def get_Funny_jokes():
     output("GET Funny jokes")
     try:
-        content_num = random.randint(1, 10)
+        content_num = random.randint(0, 9)
         resp = requests.get(
             smile_url + str(random.randint(1, 8715)), timeout=5, verify=False
         )
@@ -214,7 +214,7 @@ def get_today_zodiac():
             verify=False,
         )
         if resp.status_code == 200 and resp.json()["code"] == 1:
-            msg = f'当前日期：{resp.json()["data"]["date"]}\n本周第{resp.json()["data"]["weekDay"]}天\n属相：{resp.json()["data"]["chineseZodiac"]}\n节气：{resp.json()["data"]["solarTerms"]}\n农历：{resp.json()["data"]["lunarCalendar"]}\n宜：{resp.json()["data"]["suit"]}\n忌：{resp.json()["data"]["avoid"]}\n今年第{resp.json()["data"]["dayOfYear"]}天\n今年第{resp.json()["data"]["weekOfYear"]}周\n星座：{resp.json()["data"]["constellation"]}\n本月第{resp.json()["data"]["indexWorkDayOfMonth"]}工作日'
+            msg = f'当前日期：{resp.json()["data"]["date"]}\n本周第{resp.json()["data"]["weekDay"]}天\n属相：{resp.json()["data"]["chineseZodiac"]}\n节气：{resp.json()["data"]["solarTerms"]}\n农历：{resp.json()["data"]["lunarCalendar"]}\n宜：{resp.json()["data"]["suit"]}\n忌：{resp.json()["data"]["avoid"]}\n今年第{resp.json()["data"]["dayOfYear"]}天\n今年第{resp.json()["data"]["weekOfYear"]}周\n星座：{resp.json()["data"]["constellation"]}\n本月第{resp.json()["data"]["indexWorkDayOfMonth"]}个工作日'
         else:
             msg = f"ERROR：接口请求请求异常，接口状态：{resp.status_code},错误信息：{resp.json()['msg']}"
             output(msg)

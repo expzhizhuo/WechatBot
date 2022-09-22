@@ -306,8 +306,41 @@ def handle_recv_msg(msgJson):
         if keyword == "ding":
             ws.send(send_msg("dong", roomid=roomid, wxid=senderid))
         elif keyword == "dong":
-            result = "ding"
-            ws.send(send_msg(result, roomid=roomid, wxid=senderid))
+            msg = "ding"
+            ws.send(send_msg(msg, roomid=roomid, wxid=senderid))
+        elif keyword == "鸡汤":
+            msg = get_chicken_soup()
+            ws.send(send_msg(msg, roomid=roomid, wxid=senderid))
+        elif "md5解密" in keyword or "md5" in keyword or "MD5解密" in keyword:
+            msg = get_md5(keyword)
+            if len(msg) > 2:
+                ws.send(send_msg(msg, roomid=roomid, wxid=senderid))
+            else:
+                pass
+        elif keyword == "舔狗日记":
+            msg = get_lick_the_dog_diary()
+            ws.send(send_msg(msg, roomid=roomid, wxid=senderid))
+        elif keyword == "彩虹屁":
+            msg = get_rainbow_fart()
+            ws.send(send_msg(msg, roomid=roomid, wxid=senderid))
+        elif keyword == "历史上的今天":
+            msg = get_history_event()
+            send_img_room(msg, senderid)
+        elif keyword == "今日资讯":
+            msg = get_safety_news()
+            ws.send(send_msg(msg, roomid=roomid, wxid=senderid))
+        elif keyword == "美女视频" or keyword == "视频" or keyword == "美女":
+            msg = get_girl_videos()
+            send_file_room(msg, senderid)
+        elif "查询" in msgJson["content"] and "天气" in msgJson["content"]:
+            msg = get_today_weather(msgJson["content"].split("\u2005")[-1])
+            ws.send(send_msg(msg, wxid=senderid))
+        elif "段子" == keyword:
+            msg = get_Funny_jokes()
+            ws.send(send_msg(msg, wxid=senderid))
+        elif "黄历" == keyword:
+            msg = get_today_zodiac()
+            ws.send(send_msg(msg, wxid=senderid))
 
 
 def on_message(ws, message):
