@@ -22,22 +22,42 @@ config.ini详解
 # 微信机器人服务端的配置文件
 ip = 127.0.0.1
 port = 5555
+# 管理员wxid
 admin_id = wxid_kb0e7h9icqqv22
+# 推送的微信群聊地址
+room_id = 23117228686@chatroom,24472020852@chatroom,20809144388@chatroom,22261634025@chatroom
+# 视频权限群聊地址
+video_list_room_id = 19820015740@chatroom,23117228686@chatroom,25348406777@chatroom,20809144388@chatroom
+# 早报自动推送时间
+set_time_am = 09:00
+# 晚间咨询自动推送时间
+set_time_pm = 17:00
+# 推送今日黄历
+set_time_am_today = 08:30
 
 [apiService]
 # MD5解密接口
-md5_url = 
+md5_url = https://api.pmd5.com/pmd5api/pmd5?userid=你的认证&pwd=
 # 舔狗日记接口
-dog_url = http://api.tianapi.com/
+dog_url = http://api.tianapi.com/tiangou/index?key=
 # 彩虹屁接口
-fart_url = http://api.tianapi.com/
+fart_url = http://api.tianapi.com/caihongpi/index?key=
 # 历史上的今天
 history_url = https://api.qqsuu.cn/api/60s
-# 当日安全新闻
+# 查询天气接口
+weather_url = https://api.qqsuu.cn/api/weather?city=
+# 美女视频接口
+girl_videos_url = https://tucdn.wpon.cn/api-girl/
+# 当日安全资讯
 secwiki_url = https://www.sec-wiki.com/news/rss
 freebuf_url = https://www.freebuf.com/feed
 qax_url = https://forum.butian.net/Rss
 anquanke_url = https://www.anquanke.com/knowledge
+# 搞笑段子接口
+smile_url = https://www.mxnzp.com/api/jokes/list?app_id=你的认证&app_secret=你的认证&page=
+# 今日黄历接口
+zodiac_url = https://www.mxnzp.com/api/holiday/single/
+allow_token = ?app_id=你的认证&app_secret=你的认证
 ```
 
 **admin_id是管理员ID，在程序跑起来之后你给机器人发送一个消息即可看见**
@@ -73,6 +93,7 @@ python3 main.py
 ## 后续开发计划
 
 - 实现每日咨询自动定时推送（暂时只可以管理员指定获取）（已完成）
+- 新增黄历，段子，天气查询，美女视频等 （已完成）
 - 实现GitHub实时监控
 - 实现第三方工具实时推送
 - 待定，有需求可以提交lessus

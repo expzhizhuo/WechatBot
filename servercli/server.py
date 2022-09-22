@@ -13,7 +13,7 @@ config.read(config_path, encoding="utf-8")
 ip = config.get("server", "ip")
 port = config.get("server", "port")
 admin_id = config.get("server", "admin_id")
-
+video_list_room_id = config.get("server", "video_list_room_id")
 
 # websocket._logging._logger.level = -99
 requests.packages.urllib3.disable_warnings()
@@ -38,6 +38,7 @@ DEBUG_SWITCH = 6000
 PERSONAL_DETAIL = 6550
 DESTROY_ALL = 9999
 JOIN_ROOM = 10000
+ATTATCH_FILE = 5003
 
 
 # 'type':49 带引用的消息
@@ -80,9 +81,9 @@ def get_personal_info():
     }
     respJson = send(uri, data)
     wechatBotInfo = f"""
-    
+
     WechatBot登录信息
-    
+
     微信昵称：{json.loads(respJson["content"])['wx_name']}
     微信号：{json.loads(respJson["content"])['wx_code']}
     微信id：{json.loads(respJson["content"])['wx_id']}
@@ -194,12 +195,8 @@ def destroy_all():
 
 # 消息发送函数
 def send_msg(msg, wxid="null", roomid=None, nickname="null"):
-    if msg.endswith("tmp.png"):
+    if "jpg" in msg:
         msg_type = PIC_MSG
-        if roomid:
-            wxid = roomid
-            roomid = None
-            nickname = "null"
     elif roomid:
         msg_type = AT_MSG
     else:
@@ -266,7 +263,7 @@ def handle_recv_msg(msgJson):
         senderid = msgJson["wxid"]  # 个人id
     nickname = get_member_nick(roomid, senderid)
     if roomid:
-        if keyword == "test" and senderid == admin_id:
+        if keyword == "test" and senderid in admin_id.split(","):
             msg = "Server is Onloine"
             ws.send(send_msg(msg, roomid=roomid, wxid=senderid, nickname=nickname))
             # 这里是群消息的回复
@@ -285,13 +282,26 @@ def handle_recv_msg(msgJson):
         elif keyword == "彩虹屁":
             msg = get_rainbow_fart()
             ws.send(send_msg(msg, roomid=roomid, wxid=senderid, nickname=nickname))
-        elif keyword == "历史上的今天":
+        elif keyword == "历史上的今天" and senderid in admin_id.split(","):
             msg = get_history_event()
-            ws.send(send_msg(msg, roomid=roomid, wxid=senderid, nickname=nickname))
-        elif keyword == "今日资讯" and senderid == admin_id:
+            send_img_room(msg, roomid)
+        elif keyword == "今日资讯" and senderid in admin_id.split(","):
             msg = get_safety_news()
             ws.send(send_msg(msg, roomid=roomid, wxid=senderid, nickname=nickname))
-
+        elif (
+            keyword == "美女视频" or keyword == "视频" or keyword == "美女"
+        ) and roomid in video_list_room_id.split(","):
+            msg = get_girl_videos()
+            send_file_room(msg, roomid)
+        elif "查询" in msgJson["content"] and "天气" in msgJson["content"]:
+            msg = get_today_weather(msgJson["content"].split("\u2005")[-1])
+            ws.send(send_msg(msg, wxid=roomid))
+        elif "段子" == keyword:
+            msg = get_Funny_jokes()
+            ws.send(send_msg(msg, wxid=roomid))
+        elif "黄历" == keyword:
+            msg = get_today_zodiac()
+            ws.send(send_msg(msg, wxid=roomid))
     else:
         if keyword == "ding":
             ws.send(send_msg("dong", roomid=roomid, wxid=senderid))
@@ -338,17 +348,6 @@ def bot():
 # 全局自动推送函数
 def auto_send_message_room(msg, roomid):
     output("Websocket Sending Message")
-    # qs = {
-    #     "id": getid(),
-    #     "type": TXT_MSG,
-    #     "roomid": roomid,
-    #     "wxid": "null",
-    #     "content": msg,
-    #     "nickname": "null",
-    #     "ext": "null",
-    # }
-    # output(f"发送消息: {qs}")
-    # ws.send(json.dumps(qs))
     data = {
         "id": getid(),
         "type": TXT_MSG,
@@ -367,4 +366,42 @@ def auto_send_message_room(msg, roomid):
     ):
         output("每日自动推送成功")
     else:
-        output(f"Error：{res.text}")
+        output(f"ERROR：{res.text}")
+
+
+def send_file_room(msg, roomid):
+    output("Websocket Sending Message")
+    data = {
+        "id": getid(),
+        "type": ATTATCH_FILE,
+        "roomid": "null",
+        "content": msg,
+        "wxid": roomid,
+        "nickname": "null",
+        "ext": "null",
+    }
+    url = f"http://{ip}:{port}/api/sendattatch"
+    res = requests.post(url, json={"para": data}, timeout=5)
+    if res.status_code == 200 and res.json()["status"] == "SUCCSESSED":
+        output("文件发送成功")
+    else:
+        output(f"ERROR：{res.text}")
+
+
+def send_img_room(msg, roomid):
+    output("Websocket Sending Message")
+    data = {
+        "id": getid(),
+        "type": PIC_MSG,
+        "roomid": "null",
+        "content": msg,
+        "wxid": roomid,
+        "nickname": "null",
+        "ext": "null",
+    }
+    url = f"http://{ip}:{port}/api/sendpic"
+    res = requests.post(url, json={"para": data}, timeout=5)
+    if res.status_code == 200 and res.json()["status"] == "SUCCSESSED":
+        output("文件发送成功")
+    else:
+        output(f"ERROR：{res.text}")
