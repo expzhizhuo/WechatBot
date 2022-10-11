@@ -282,7 +282,7 @@ def handle_recv_msg(msgJson):
         elif keyword == "彩虹屁":
             msg = get_rainbow_fart()
             ws.send(send_msg(msg, roomid=roomid, wxid=senderid, nickname=nickname))
-        elif keyword == "历史上的今天" and senderid in admin_id.split(","):
+        elif keyword == "今日新闻" and senderid in admin_id.split(","):
             msg = get_history_event()
             send_img_room(msg, roomid)
         elif keyword == "今日资讯" and senderid in admin_id.split(","):
@@ -301,6 +301,18 @@ def handle_recv_msg(msgJson):
             ws.send(send_msg(msg, wxid=roomid))
         elif "黄历" == keyword:
             msg = get_today_zodiac()
+            ws.send(send_msg(msg, wxid=roomid))
+        elif "查询" in msgJson["content"] and "运势" in msgJson["content"]:
+            msg = get_constellation_info(msgJson["content"].split("\u2005")[-1])
+            ws.send(send_msg(msg, wxid=roomid))
+        elif "早安" == keyword:
+            msg = get_morning_info()
+            ws.send(send_msg(msg, roomid=roomid, wxid=senderid, nickname=nickname))
+        elif "@疯狂星期四\u2005" in msgJson["content"] and keyword:
+            msg = ai_reply(keyword)
+            ws.send(send_msg(msg, roomid=roomid, wxid=senderid, nickname=nickname))
+        elif "摸鱼日历" == keyword or "摸鱼日记" == keyword:
+            msg = Touch_the_fish()
             ws.send(send_msg(msg, wxid=roomid))
     else:
         if keyword == "ding":
@@ -323,7 +335,7 @@ def handle_recv_msg(msgJson):
         elif keyword == "彩虹屁":
             msg = get_rainbow_fart()
             ws.send(send_msg(msg, roomid=roomid, wxid=senderid))
-        elif keyword == "历史上的今天":
+        elif keyword == "今日新闻":
             msg = get_history_event()
             send_img_room(msg, senderid)
         elif keyword == "今日资讯":
@@ -340,6 +352,18 @@ def handle_recv_msg(msgJson):
             ws.send(send_msg(msg, wxid=senderid))
         elif "黄历" == keyword:
             msg = get_today_zodiac()
+            ws.send(send_msg(msg, wxid=senderid))
+        elif "查询" in msgJson["content"] and "运势" in msgJson["content"]:
+            msg = get_constellation_info(msgJson["content"].split("\u2005")[-1])
+            ws.send(send_msg(msg, wxid=senderid))
+        elif "早安" == keyword:
+            msg = get_morning_info()
+            ws.send(send_msg(msg, wxid=senderid))
+        elif "摸鱼日历" == keyword or "摸鱼日记" == keyword:
+            msg = Touch_the_fish()
+            ws.send(send_msg(msg, wxid=senderid))
+        else:
+            msg = ai_reply(keyword)
             ws.send(send_msg(msg, wxid=senderid))
 
 

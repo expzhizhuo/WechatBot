@@ -1,3 +1,4 @@
+import datetime
 import os
 import re
 import requests
@@ -19,6 +20,11 @@ weather_url = config.get("apiService", "weather_url")
 smile_url = config.get("apiService", "smile_url")
 zodiac_url = config.get("apiService", "zodiac_url")
 allow_token = config.get("apiService", "allow_token")
+constellation_url = config.get("apiService", "constellation_url")
+morning_url = config.get("apiService", "morning_url")
+ai_reply_url = config.get("apiService", "ai_reply_url")
+after_work_time = config.get("server", "after_work_time")
+salary_day = config.get("server", "salary_day")
 
 
 # 获取历史的今天事件
@@ -73,18 +79,18 @@ def get_today_weather(self):
         city_list = re.findall("查询(.*?)天气", self)
         if len(city_list) > 0:
             city = city_list[0]
+            resp = requests.get(weather_url + str(city), timeout=5, verify=False)
+            if resp.status_code == 200 and "errcode" not in resp.text:
+                msg = f'今日{city}的天气\n日期：{resp.json()["date"]}\n当前温度：{resp.json()["tem"]}\n最高气温：{resp.json()["tem_day"]}\n最低气温：{resp.json()["tem_night"]}\n风向：{resp.json()["win"]}\n风速：{resp.json()["win_meter"]}\n天气：{resp.json()["wea"]}\n湿度：{resp.json()["humidity"]}\n\nBy zhizhuo\n更新时间：{resp.json()["update_time"]}'
+            elif "errcode" in resp.text and resp.json()["errcode"] == 100:
+                output(f'天气查询接口出错，请稍后重试,接口状态{resp.json()["errmsg"]}')
+                msg = resp.json()["errmsg"].replace("city", "城市中")
+            else:
+                msg = f"天气查询接口出错，请稍后重试,接口状态{resp.status_code}"
         else:
-            city = ""
-        resp = requests.get(str(weather_url) + str(city), timeout=5, verify=False)
-        if resp.status_code == 200 and resp.json()["status"] == 1000:
-            air_speed = resp.json()["data"]["forecast"][0]["fengli"]
-            air_speed_msg = air_speed.replace("<![CDATA[", "").replace("]]>", "")
-            weather_msg = f'今日{city}的天气\n日期：{resp.json()["data"]["forecast"][0]["date"]}\n最高气温：{resp.json()["data"]["forecast"][0]["high"]}\n最低气温：{resp.json()["data"]["forecast"][0]["low"]}\n风向：{resp.json()["data"]["forecast"][0]["fengxiang"]}\n风速：{air_speed_msg}\n天气：{resp.json()["data"]["forecast"][0]["type"]}\n\nBy zhizhuo\n{time.strftime("%Y-%m-%d %X")}'
-            msg = weather_msg
-        else:
-            msg = f"天气查询接口出错，请稍后重试,接口状态{resp.status_code}"
+            msg = "语法错误，请输入查询xx天气"
     except Exception as e:
-        output("ERROR: {0}".format(e))
+        output(f"ERROR: {e}")
         msg = "天气查询接口出错，ERROR:{}".format(e)
     return msg
 
@@ -143,13 +149,14 @@ def get_md5(self):
             else:
                 msg = "MD5解密失败"
         else:
-            msg = None
+            msg = "请使用语句md5解密 密文"
             pass
     except Exception as e:
         msg = "PMD5解密接口调用出错，错误信息：{}".format(e)
     return msg
 
 
+# 获取美女视频接口
 def get_girl_videos():
     output("Get Girl Videos")
     try:
@@ -173,6 +180,7 @@ def get_girl_videos():
                 msg = video_path.replace("\\", "\\\\")
             else:
                 msg = "ERROR：未识别到URL连接"
+                output(msg)
         else:
             msg = "站点状态异常，访问请求：{}".format(resp.status_code)
     except Exception as e:
@@ -221,4 +229,106 @@ def get_today_zodiac():
     except Exception as e:
         output(f"ERROR：{e}")
         msg = f"搞笑段子接口调用出错，ERROR：{e}"
+    return msg
+
+
+# 获取早安寄语
+def get_morning_info():
+    output("Get morning info")
+    try:
+        resp = requests.get(morning_url, timeout=5, verify=False)
+        if resp.status_code == 200 and resp.json()["code"] == 1:
+            msg = resp.json()["data"][0]["content"]
+    except Exception as e:
+        output(f"ERROR：{e}")
+        msg = f"早安寄语接口调用出错，ERROR：{e}"
+    return msg
+
+
+# 获取星座运势
+def get_constellation_info(self):
+    output("Get constellation info")
+    try:
+        constellation_list = re.findall("查询(.*?)运势", self)
+        if len(constellation_list) > 0:
+            resp = requests.get(
+                constellation_url + constellation_list[0],
+                timeout=5,
+                verify=False,
+            )
+            if resp.status_code == 200 and resp.json()["code"] == 200:
+                msg = f"星座：{constellation_list[0]}"
+                for i in range(0, len(resp.json()["newslist"])):
+                    msg += f"\n{resp.json()['newslist'][i]['type']}：{resp.json()['newslist'][i]['content']}"
+            else:
+                msg = f"ERROR：接口请求请求异常，错误信息：{resp.json()['msg']}"
+                output(msg)
+        else:
+            msg = "语法错误，请输入查询xx座运势"
+    except Exception as e:
+        output(f"ERROR：{e}")
+        msg = f"星座运势接口调用出错，ERROR：{e}"
+    return msg
+
+
+# AI闲聊接口信息
+def ai_reply(self):
+    output("GET AI Reply")
+    try:
+        resp = requests.get(str(ai_reply_url) + str(self), timeout=5, verify=False)
+        if resp.status_code == 200 and resp.json()["result"] == 0:
+            msg = resp.json()["content"]
+        else:
+            msg = "你消息发送的太频繁了，慢一点"
+    except Exception as e:
+        output(f"ERROR：{e}")
+        msg = f"AI对话机器人接口调用出错，ERROR：{e}"
+    return msg
+
+
+# 计算时间差函数
+def diff_day(start_day, end_day):
+    start_sec = time.mktime(time.strptime(start_day, "%Y-%m-%d"))
+    end_sec = time.mktime(time.strptime(end_day, "%Y-%m-%d"))
+    return int((end_sec - start_sec) / 86400)
+
+
+def diff_hour(start_hour, end_hour):
+    start_sec = time.mktime(time.strptime(start_hour, "%Y-%m-%d %H:%M:%S"))
+    end_sec = time.mktime(time.strptime(end_hour, "%Y-%m-%d %H:%M:%S"))
+    return [
+        int((end_sec - start_sec) / 3600),
+        int((end_sec - start_sec) / 60) - int((end_sec - start_sec) / 3600) * 60,
+    ]
+
+
+def get_time():
+    if time.localtime().tm_hour < 12:
+        return "上午好"
+    elif time.localtime().tm_hour == 12:
+        return "中午好"
+    else:
+        return "晚上好"
+
+
+# 摸鱼日历
+def Touch_the_fish():
+    week_list = ["星期一", "星期二", "星期三", "星期四", "星期五", "星期六", "星期日"]
+    time_now = time.strftime("%Y-%m-%d")
+    timeNow = time.strftime("%Y-%m-%d %X")
+    New_Year_Day = str(int(time.strftime("%Y")) + 1) + "-01-01"
+    salary_Day = (
+        str(int(time.strftime("%Y")))
+        + "-"
+        + str(int(time.strftime("%m")) + 1)
+        + "-"
+        + str(salary_day)
+    )
+    epidemic_Day = "2019-12-16"
+    National_Day = str(int(time.strftime("%Y")) + 1) + "-10-01"
+    after_work = f"{time_now} {after_work_time}:00"
+    if diff_hour(timeNow, after_work)[1] > 0:
+        msg = f'【摸鱼办】提醒您：\n🍁今天是{time.strftime("%m")}月{time.strftime("%d")}日 {week_list[int(datetime.date.today().isoweekday())-1]}\n👨‍💻{get_time()}摸鱼人！工作再累，一定不要忘记喝水哦！希望此刻看到消息的人可以和我一起来喝一杯水。及时排便洗手，记得关门。一小时后我会继续提醒大家喝水，和我一起成为一天喝八杯水的人吧！\n══════════\n🚇距离下班还有：{diff_hour(timeNow, after_work)[0]}小时{diff_hour(timeNow, after_work)[1]}分钟\n💰距离发工资还有：{diff_day(time_now, salary_Day)}天\n🍁距离元旦还有：{diff_day(time_now, New_Year_Day)}天\n🏮距离国庆还有：{diff_day(time_now, National_Day)}天\n⌚距离疫情开始：{diff_day(epidemic_Day, time_now)}天\n══════════\n有事没事起身去茶水间，去厕所，去廊道走走别老在工位上坐着。上班是帮老板赚钱，摸鱼是赚老板的钱！最后，祝愿天下所有摸鱼人，都能愉快的渡过每一天💪'
+    else:
+        msg = "各部门请注意，下班时间已过！！！请滚，不要浪费电费，记得发日报！\n[Doge] over"
     return msg

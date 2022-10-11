@@ -39,22 +39,26 @@ def get_secwiki_news():
     news_list += "#secwiki"
     try:
         rs1 = feedparser.parse(secwiki_url)
-        html = rs1.entries[0]["summary_detail"]["value"]
-        soup = BeautifulSoup(html, "html.parser")
-        for k in soup.find_all("a"):
-            if "SecWiki" == k.string:
-                pass
-            elif time.strftime("%Y-%m-%d") in k.string:
-                link1 = "\n" + k.string + "\n" + k["href"] + "\n"
-                str_list += link1
+        if time.strftime("%Y-%m-%d") in str(rs1.entries[0]):
+            html = rs1.entries[0]["summary_detail"]["value"]
+            soup = BeautifulSoup(html, "html.parser")
+            for k in soup.find_all("a"):
+                if "SecWiki" == k.string:
+                    pass
+                else:
+                    link1 = "\n" + k.string + "\n" + k["href"] + "\n"
+                    str_list += link1
+            if len(str_list) > 0:
+                news_list += str_list
             else:
-                pass
-        if len(str_list) > 0:
-            news_list += str_list
+                link6 = "\n今日暂无文章"
+                news_list += link6
         else:
             link6 = "\n今日暂无文章"
             news_list += link6
     except Exception as e:
+        link6 = "\n今日暂无文章"
+        news_list += link6
         output("secwiki ERROR：{}".format(e))
         return "secwiki is no ok"
 
@@ -70,8 +74,12 @@ def get_freebuf_news():
         for buf in range(length):
             try:
                 if (
-                    time.strftime("%Y") in rs1.entries[buf]
-                    and time.strftime("%d") in rs1.entries[buf]
+                    f'tm_year={time.strftime("%Y")}'
+                    in str(rs1.entries[buf]["published_parsed"])
+                    and f'tm_mon={time.strftime("%m")}'
+                    in str(rs1.entries[buf]["published_parsed"])
+                    and f'tm_mday={str(int(time.strftime("%d")) - 1)}'
+                    in str(rs1.entries[buf]["published_parsed"])
                 ):
                     url_f = rs1.entries[buf]["link"]
                     title_f = rs1.entries[buf]["title_detail"]["value"]
@@ -88,6 +96,8 @@ def get_freebuf_news():
             link6 = "\n今日暂无文章"
             news_list += link6
     except Exception as e:
+        link6 = "\n今日暂无文章"
+        news_list += link6
         output("ERROR：freebuf {}".format(e))
         return "freebuf is no ok"
 
@@ -102,7 +112,7 @@ def get_qax_news():
         length = len(rs1.entries)
         for buf in range(length):
             try:
-                if time.strftime("%Y-%m-%d") in rs1.entries[buf]:
+                if time.strftime("%Y-%m-%d") in rs1.entries[buf]["published"]:
                     url_f = rs1.entries[buf]["link"]
                     title_f = rs1.entries[buf]["title_detail"]["value"]
                     link4 = "\n" + title_f + "\n" + url_f + "\n"
@@ -118,6 +128,8 @@ def get_qax_news():
             link6 = "\n今日暂无文章"
             news_list += link6
     except Exception as e:
+        link6 = "\n今日暂无文章"
+        news_list += link6
         output("ERROR：奇安信攻防社区 {}".format(e))
         return "qax is no ok"
 
@@ -166,6 +178,8 @@ def get_anquanke_news():
             link6 = "\n今日暂无文章"
             news_list += link6
     except Exception as e:
+        link6 = "\n今日暂无文章"
+        news_list += link6
         output("ERROR：安全客 {}".format(e))
         return "安全客 is no ok"
 
