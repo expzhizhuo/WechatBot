@@ -78,7 +78,7 @@ def get_freebuf_news():
                     in str(rs1.entries[buf]["published_parsed"])
                     and f'tm_mon={time.strftime("%m")}'
                     in str(rs1.entries[buf]["published_parsed"])
-                    and f'tm_mday={str(int(time.strftime("%d")) - 1)}'
+                    and f'tm_mday={str(time.strftime("%d"))}'
                     in str(rs1.entries[buf]["published_parsed"])
                 ):
                     url_f = rs1.entries[buf]["link"]
@@ -193,5 +193,5 @@ def get_safety_news():
     get_qax_news()
     get_anquanke_news()
     output("获取成功")
-    news_list += "\n\nCreated by zhizhuo \n{}".format(time.strftime("%Y-%m-%d %X"))
+    news_list += "\nCreated by zhizhuo \n{}".format(time.strftime("%Y-%m-%d %X"))
     return news_list
