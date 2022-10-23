@@ -14,6 +14,7 @@ ip = config.get("server", "ip")
 port = config.get("server", "port")
 admin_id = config.get("server", "admin_id")
 video_list_room_id = config.get("server", "video_list_room_id")
+blacklist_room_id = config.get("server", "blacklist_room_id")
 
 # websocket._logging._logger.level = -99
 requests.packages.urllib3.disable_warnings()
@@ -267,7 +268,7 @@ def handle_recv_msg(msgJson):
             msg = "Server is Onloine"
             ws.send(send_msg(msg, roomid=roomid, wxid=senderid, nickname=nickname))
             # 这里是群消息的回复
-        elif keyword == "鸡汤":
+        elif keyword == "鸡汤" and roomid not in blacklist_room_id.split(","):
             msg = get_chicken_soup()
             ws.send(send_msg(msg, roomid=roomid, wxid=senderid, nickname=nickname))
         elif "md5解密" in keyword or "md5" in keyword or "MD5解密" in keyword:
@@ -276,16 +277,18 @@ def handle_recv_msg(msgJson):
                 ws.send(send_msg(msg, roomid=roomid, wxid=senderid, nickname=nickname))
             else:
                 pass
-        elif keyword == "舔狗日记":
+        elif keyword == "舔狗日记" and roomid not in blacklist_room_id.split(","):
             msg = get_lick_the_dog_diary()
             ws.send(send_msg(msg, roomid=roomid, wxid=senderid, nickname=nickname))
-        elif keyword == "彩虹屁":
+        elif keyword == "彩虹屁" and roomid not in blacklist_room_id.split(","):
             msg = get_rainbow_fart()
             ws.send(send_msg(msg, roomid=roomid, wxid=senderid, nickname=nickname))
         elif keyword == "今日新闻" and senderid in admin_id.split(","):
             msg = get_history_event()
             send_img_room(msg, roomid)
-        elif keyword == "今日资讯" and senderid in admin_id.split(","):
+        elif (keyword == "今日资讯" or keyword == "安全资讯") and senderid in admin_id.split(
+            ","
+        ):
             msg = get_safety_news()
             ws.send(send_msg(msg, roomid=roomid, wxid=senderid, nickname=nickname))
         elif (
@@ -296,19 +299,27 @@ def handle_recv_msg(msgJson):
         elif "查询" in msgJson["content"] and "天气" in msgJson["content"]:
             msg = get_today_weather(msgJson["content"].split("\u2005")[-1])
             ws.send(send_msg(msg, wxid=roomid))
-        elif "段子" == keyword:
+        elif "段子" == keyword and roomid not in blacklist_room_id.split(","):
             msg = get_Funny_jokes()
             ws.send(send_msg(msg, wxid=roomid))
         elif "黄历" == keyword:
             msg = get_today_zodiac()
             ws.send(send_msg(msg, wxid=roomid))
-        elif "查询" in msgJson["content"] and "运势" in msgJson["content"]:
+        elif (
+            "查询" in msgJson["content"]
+            and "运势" in msgJson["content"]
+            and roomid not in blacklist_room_id.split(",")
+        ):
             msg = get_constellation_info(msgJson["content"].split("\u2005")[-1])
             ws.send(send_msg(msg, wxid=roomid))
         elif "早安" == keyword:
             msg = get_morning_info()
             ws.send(send_msg(msg, roomid=roomid, wxid=senderid, nickname=nickname))
-        elif "@疯狂星期四\u2005" in msgJson["content"] and keyword:
+        elif (
+            "@疯狂星期四\u2005" in msgJson["content"]
+            and keyword
+            and roomid not in blacklist_room_id.split(",")
+        ):
             msg = ai_reply(keyword)
             ws.send(send_msg(msg, roomid=roomid, wxid=senderid, nickname=nickname))
         elif "摸鱼日历" == keyword or "摸鱼日记" == keyword:

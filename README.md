@@ -78,6 +78,12 @@ ai_reply_url = http://api.qingyunke.com/api.php?key=free&msg=
 
 这个就是你的管理身份账号
 
+***其中群里地址就是roomid在控制台中打印的msg中就能看见**
+
+![image-20221023202452175](images/image-20221023202452175.png) 
+
+![image-20221023202551321](images/image-20221023202551321.png) 
+
 **舔狗日记和彩虹屁接口信息可以到https://www.tianapi.com进行注册获取**
 
 ## 项目启动
@@ -101,6 +107,22 @@ python3 main.py
 ```
 
 ***建议使用python3.8以上**
+
+**如果其中有不需要的功能就不用配置config.ini中的api接口信息，其中config.ini中的配置文件和前面的一个处理函数是关联关系，删除或者注释config.ini的配置文件会引起报错项目无法启动，如果不需要可以将相关的处理函数注释点即可，如果有什么新的玩法可以提交Pr**
+
+## 项目结构
+
+### config
+
+为项目的配置文件目录
+
+### servercli
+
+为项目的核心处理逻辑目录，主要是使用的websocket和http协议进行的通信
+
+### httpcli
+
+主要为接口的一些处理逻辑文件的目录，大部分的配置文件都是config目录中的，二者是关联关系
 
 ## 后续开发计划
 

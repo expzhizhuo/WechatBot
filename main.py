@@ -5,6 +5,7 @@ from servercli.server import *
 import configparser
 import schedule
 from multiprocessing import Process
+import datetime
 
 
 # 读取本地的配置文件
@@ -56,15 +57,27 @@ def everyday_morning_push():
 
 def everyday_fish_push():
     output("今日摸鱼日历推送")
-    msg = Touch_the_fish()
-    room_id_list = room_id.split(",")
-    for i in range(len(room_id_list)):
-        auto_send_message_room(msg, room_id_list[i])
+    if (
+        int(datetime.date.today().isoweekday()) == 6
+        or int(datetime.date.today().isoweekday()) == 7
+    ):
+        pass
+    else:
+        msg = Touch_the_fish()
+        room_id_list = room_id.split(",")
+        for i in range(len(room_id_list)):
+            auto_send_message_room(msg, room_id_list[i])
 
 
 def everyday_after_work_push():
     output("下班通知推送")
-    msg = "各部门请注意，下班时间已到！！！请滚，不要浪费电费，记得发日报！\n[Doge] over"
+    if (
+        int(datetime.date.today().isoweekday()) == 6
+        or int(datetime.date.today().isoweekday()) == 7
+    ):
+        msg = None
+    else:
+        msg = "各部门请注意，下班时间已到！！！请滚，不要浪费电费，记得发日报！\n[Doge] over"
     room_id_list = room_id.split(",")
     for i in range(len(room_id_list)):
         auto_send_message_room(msg, room_id_list[i])
@@ -74,7 +87,10 @@ def tomato_after_work_push():
     output("番茄下班通知推送")
     msg = "各部门请注意，番茄下班时间已到！！！请火速回家，不要浪费电费，记得发日报！\n[Doge] over"
     roomid = "25348406777@chatroom"
-    auto_send_message_room(msg, roomid)
+    if int(datetime.date.today().isoweekday()) == 7:
+        pass
+    else:
+        auto_send_message_room(msg, roomid)
 
 
 # 创建定时任务
