@@ -307,6 +307,8 @@ def get_time():
         return "上午好"
     elif time.localtime().tm_hour == 12:
         return "中午好"
+    elif 12 < time.localtime().tm_hour < 18:
+        return "下午好"
     else:
         return "晚上好"
 

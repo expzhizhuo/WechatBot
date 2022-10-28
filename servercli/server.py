@@ -278,8 +278,8 @@ def handle_recv_msg(msgJson):
             else:
                 pass
         elif keyword == "舔狗日记" and roomid not in blacklist_room_id.split(","):
-            # msg = get_lick_the_dog_diary()
-            msg = "舔狗日记已永久下线，在这里很遗憾的通知大家！"
+            msg = get_lick_the_dog_diary()
+            # msg = "舔狗日记已永久下线，在这里很遗憾的通知大家！"
             ws.send(send_msg(msg, roomid=roomid, wxid=senderid, nickname=nickname))
         elif keyword == "彩虹屁" and roomid not in blacklist_room_id.split(","):
             msg = get_rainbow_fart()
@@ -342,8 +342,8 @@ def handle_recv_msg(msgJson):
             else:
                 pass
         elif keyword == "舔狗日记":
-            # msg = get_lick_the_dog_diary()
-            msg = "舔狗日记已永久下线，在这里很遗憾的通知大家！"
+            msg = get_lick_the_dog_diary()
+            # msg = "舔狗日记已永久下线，在这里很遗憾的通知大家！"
             ws.send(send_msg(msg, roomid=roomid, wxid=senderid))
         elif keyword == "彩虹屁":
             msg = get_rainbow_fart()
