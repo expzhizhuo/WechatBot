@@ -138,6 +138,24 @@ python3 main.py
 
 代码写的烂，轻点喷，毕竟我这么菜，后续项目迭代看心情吧，就这样
 
+## 温馨提示
+
+尽量使用git命令进行克隆，不要使用zip压缩包下载模式，可能会造成程序跑不起来
+
+git命令
+
+```
+git clone https://github.com/zhizhuoshuma/WechatBot.git
+```
+
+国内git加速命令
+
+```
+git clone https://github.91chi.fun/https://github.com/zhizhuoshuma/WechatBot.git
+```
+
+如果程序跑不起来，可以提交lessus，或者微信联系我，给我ssh或者rdp我上去帮你远程调试
+
 ## 参考资料
 
 - https://github.com/Le0nsec/SecCrawler
