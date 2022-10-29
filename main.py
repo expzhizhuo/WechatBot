@@ -6,6 +6,7 @@ import configparser
 import schedule
 from multiprocessing import Process
 import datetime
+from pyfiglet import Figlet
 
 
 # 读取本地的配置文件
@@ -125,4 +126,7 @@ def main():
 
 
 if __name__ == "__main__":
+    f = Figlet(font="slant", width=2000)
+    cprint(f.renderText("WechatBot"), "green")
+    cprint("\t\t\t\t\t\t--------By zhizhuo")
     main()
