@@ -75,7 +75,7 @@ def everyday_after_work_push():
         int(datetime.date.today().isoweekday()) == 6
         or int(datetime.date.today().isoweekday()) == 7
     ):
-        msg = None
+        msg = ""
     else:
         msg = "各部门请注意，下班时间已到！！！请滚，不要浪费电费，记得发日报！\n[Doge] over"
     room_id_list = room_id.split(",")
