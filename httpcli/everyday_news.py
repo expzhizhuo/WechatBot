@@ -12,7 +12,7 @@ current_path = os.path.dirname(__file__)
 config_path = os.path.join(current_path, "../config/config.ini")
 config = configparser.ConfigParser()  # 类实例化
 config.read(config_path, encoding="utf-8")
-secwiki_url = config.get("apiService", "secwiki_url")
+xz_url = config.get("apiService", "xz_url")
 freebuf_url = config.get("apiService", "freebuf_url")
 qax_url = config.get("apiService", "qax_url")
 anquanke_url = config.get("apiService", "anquanke_url")
@@ -32,55 +32,17 @@ headers = {
 }
 
 
-# secwiki 源
-def get_secwiki_news():
+# 先知社区
+def get_xz_news():
     global news_list
     str_list = ""
-    news_list += "#secwiki"
+    news_list += "#先知社区"
     try:
-        rs1 = feedparser.parse(secwiki_url)
-        if time.strftime("%Y-%m-%d") in str(rs1.entries[0]):
-            html = rs1.entries[0]["summary_detail"]["value"]
-            soup = BeautifulSoup(html, "html.parser")
-            for k in soup.find_all("a"):
-                if "SecWiki" == k.string:
-                    pass
-                else:
-                    link1 = "\n" + k.string + "\n" + k["href"] + "\n"
-                    str_list += link1
-            if len(str_list) > 0:
-                news_list += str_list
-            else:
-                link6 = "\n今日暂无文章"
-                news_list += link6
-        else:
-            link6 = "\n今日暂无文章"
-            news_list += link6
-    except Exception as e:
-        link6 = "\n今日暂无文章"
-        news_list += link6
-        output("secwiki ERROR：{}".format(e))
-        return "secwiki is no ok"
-
-
-# freebuf 源
-def get_freebuf_news():
-    global news_list
-    str_list = ""
-    news_list += "\n#freebuf"
-    try:
-        rs1 = feedparser.parse(freebuf_url)
+        rs1 = feedparser.parse(xz_url)
         length = len(rs1.entries)
         for buf in range(length):
             try:
-                if (
-                    f'tm_year={time.strftime("%Y")}'
-                    in str(rs1.entries[buf]["published_parsed"])
-                    and f'tm_mon={time.strftime("%m")}'
-                    in str(rs1.entries[buf]["published_parsed"])
-                    and f'tm_mday={str(time.strftime("%d"))}'
-                    in str(rs1.entries[buf]["published_parsed"])
-                ):
+                if str(time.strftime("%Y-%m-%d")) in str(rs1.entries[buf]["published"]):
                     url_f = rs1.entries[buf]["link"]
                     title_f = rs1.entries[buf]["title_detail"]["value"]
                     link4 = "\n" + title_f + "\n" + url_f + "\n"
@@ -98,8 +60,52 @@ def get_freebuf_news():
     except Exception as e:
         link6 = "\n今日暂无文章"
         news_list += link6
+        output("ERROR：先知社区 {}".format(e))
+        return "xz is no ok"
+
+
+# freebuf 源
+def get_freebuf_news():
+    # global news_list
+    str_list = ""
+    str_list += "#FreeBuf早报\n"
+    try:
+        rs1 = feedparser.parse(freebuf_url)
+        length = len(rs1.entries)
+        for buf in range(length):
+            try:
+                if (
+                    f'tm_year={time.strftime("%Y")}'
+                    in str(rs1.entries[buf]["published_parsed"])
+                    and f'tm_mon={time.strftime("%m")}'
+                    in str(rs1.entries[buf]["published_parsed"])
+                    and f'tm_mday={str(int(time.strftime("%d")) - 1)}'
+                    in str(rs1.entries[buf]["published_parsed"])
+                ):
+                    url_f = rs1.entries[buf]["link"]
+                    title_f = (
+                        rs1.entries[buf]["title_detail"]["value"]
+                        .replace("FreeBuf早报 |", "")
+                        .replace(" ", "")
+                    )
+                    link4 = "\n" + title_f + "\n" + url_f + "\n"
+                    str_list += link4
+                else:
+                    pass
+            except Exception as e:
+                output("ERROR：{}".format(e))
+                break
+        if len(str_list) == 0:
+            link6 = "\n今日暂无文章"
+            str_list += link6
+        else:
+            pass
+    except Exception as e:
+        link6 = "\n今日暂无文章"
+        str_list += link6
         output("ERROR：freebuf {}".format(e))
-        return "freebuf is no ok"
+    str_list += "\nCreated by zhizhuo \n{}".format(time.strftime("%Y-%m-%d %X"))
+    return str_list
 
 
 # 奇安信攻防社区
@@ -112,7 +118,7 @@ def get_qax_news():
         length = len(rs1.entries)
         for buf in range(length):
             try:
-                if time.strftime("%Y-%m-%d") in rs1.entries[buf]["published"]:
+                if str(time.strftime("%Y-%m-%d")) in str(rs1.entries[buf]["published"]):
                     url_f = rs1.entries[buf]["link"]
                     title_f = rs1.entries[buf]["title_detail"]["value"]
                     link4 = "\n" + title_f + "\n" + url_f + "\n"
@@ -188,8 +194,8 @@ def get_safety_news():
     output("GET safety News")
     global news_list
     news_list = ""
-    get_secwiki_news()
-    get_freebuf_news()
+    get_xz_news()
+    # get_freebuf_news()
     get_qax_news()
     get_anquanke_news()
     output("获取成功")

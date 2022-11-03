@@ -277,11 +277,11 @@ def handle_recv_msg(msgJson):
                 ws.send(send_msg(msg, roomid=roomid, wxid=senderid, nickname=nickname))
             else:
                 pass
-        elif keyword == "舔狗日记" and roomid not in blacklist_room_id.split(","):
+        elif keyword == "舔狗日记":
             msg = get_lick_the_dog_diary()
             # msg = "舔狗日记已永久下线，在这里很遗憾的通知大家！"
             ws.send(send_msg(msg, roomid=roomid, wxid=senderid, nickname=nickname))
-        elif keyword == "彩虹屁" and roomid not in blacklist_room_id.split(","):
+        elif keyword == "彩虹屁":
             msg = get_rainbow_fart()
             ws.send(send_msg(msg, roomid=roomid, wxid=senderid, nickname=nickname))
         elif keyword == "今日新闻" and senderid in admin_id.split(","):
@@ -300,7 +300,7 @@ def handle_recv_msg(msgJson):
         elif "查询" in msgJson["content"] and "天气" in msgJson["content"]:
             msg = get_today_weather(msgJson["content"].split("\u2005")[-1])
             ws.send(send_msg(msg, wxid=roomid))
-        elif "段子" == keyword and roomid not in blacklist_room_id.split(","):
+        elif "段子" == keyword:
             msg = get_Funny_jokes()
             ws.send(send_msg(msg, wxid=roomid))
         elif "黄历" == keyword:
@@ -316,17 +316,16 @@ def handle_recv_msg(msgJson):
         elif "早安" == keyword:
             msg = get_morning_info()
             ws.send(send_msg(msg, roomid=roomid, wxid=senderid, nickname=nickname))
-        elif (
-            "@疯狂星期四\u2005" in msgJson["content"]
-            and keyword
-            and roomid not in blacklist_room_id.split(",")
-        ):
+        elif "@疯狂星期四\u2005" in msgJson["content"] and keyword:
             msg = ai_reply(keyword)
             ws.send(send_msg(msg, roomid=roomid, wxid=senderid, nickname=nickname))
         elif (
             "摸鱼日历" == keyword or "摸鱼日记" == keyword
         ) and roomid not in blacklist_room_id.split(","):
             msg = Touch_the_fish()
+            ws.send(send_msg(msg, wxid=roomid))
+        elif "早报" == keyword or "安全新闻早报" == keyword:
+            msg = get_freebuf_news()
             ws.send(send_msg(msg, wxid=roomid))
     else:
         if keyword == "ding":
@@ -377,6 +376,9 @@ def handle_recv_msg(msgJson):
         elif "摸鱼日历" == keyword or "摸鱼日记" == keyword:
             msg = Touch_the_fish()
             ws.send(send_msg(msg, wxid=senderid))
+        elif "早报" == keyword or "安全新闻早报" == keyword:
+            msg = get_freebuf_news()
+            ws.send(send_msg(msg, wxid=senderid))
         else:
             msg = ai_reply(keyword)
             ws.send(send_msg(msg, wxid=senderid))
@@ -419,7 +421,7 @@ def bot():
 
 # 全局自动推送函数
 def auto_send_message_room(msg, roomid):
-    output("Websocket Sending Message")
+    output("Sending Message")
     data = {
         "id": getid(),
         "type": TXT_MSG,
@@ -436,18 +438,18 @@ def auto_send_message_room(msg, roomid):
         and res.json()["status"] == "SUCCSESSED"
         and res.json()["type"] == 555
     ):
-        output("每日自动推送成功")
+        output("消息成功")
     else:
         output(f"ERROR：{res.text}")
 
 
-def send_file_room(msg, roomid):
-    output("Websocket Sending Message")
+def send_file_room(file, roomid):
+    output("Sending Files")
     data = {
         "id": getid(),
         "type": ATTATCH_FILE,
         "roomid": "null",
-        "content": msg,
+        "content": file,
         "wxid": roomid,
         "nickname": "null",
         "ext": "null",
@@ -461,7 +463,7 @@ def send_file_room(msg, roomid):
 
 
 def send_img_room(msg, roomid):
-    output("Websocket Sending Message")
+    output("Sending Photos")
     data = {
         "id": getid(),
         "type": PIC_MSG,
@@ -474,6 +476,6 @@ def send_img_room(msg, roomid):
     url = f"http://{ip}:{port}/api/sendpic"
     res = requests.post(url, json={"para": data}, timeout=5)
     if res.status_code == 200 and res.json()["status"] == "SUCCSESSED":
-        output("文件发送成功")
+        output("图片发送成功")
     else:
         output(f"ERROR：{res.text}")

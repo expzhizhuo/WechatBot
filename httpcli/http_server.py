@@ -5,6 +5,7 @@ import requests
 from httpcli.output import *
 import configparser
 import random
+from zhdate import ZhDate as lunar_date
 
 # 读取本地的配置文件
 current_path = os.path.dirname(__file__)
@@ -315,6 +316,14 @@ def get_time():
 
 # 摸鱼日历
 def Touch_the_fish():
+    # 获取每年除夕的阳历日期
+    New_Year = (
+        str(int(time.strftime("%Y")) + 1)
+        + "-"
+        + str(lunar_date(int(time.strftime("%Y")), 12, 30).to_datetime().month)
+        + "-"
+        + str(lunar_date(int(time.strftime("%Y")), 12, 30).to_datetime().day)
+    )
     week_list = ["星期一", "星期二", "星期三", "星期四", "星期五", "星期六", "星期日"]
     time_now = time.strftime("%Y-%m-%d")
     timeNow = time.strftime("%Y-%m-%d %X")
@@ -343,7 +352,7 @@ def Touch_the_fish():
         and diff_hour(timeNow, after_work)[1] >= 0
         and int(datetime.date.today().isoweekday()) < 6
     ):
-        msg = f'【摸鱼办】提醒您：\n🍁今天是{time.strftime("%m")}月{time.strftime("%d")}日 {week_list[int(datetime.date.today().isoweekday())-1]}\n👨‍💻{get_time()}摸鱼人！工作再累，一定不要忘记喝水哦！希望此刻看到消息的人可以和我一起来喝一杯水。及时排便洗手，记得关门。一小时后我会继续提醒大家喝水，和我一起成为一天喝八杯水的人吧！\n══════════\n🚇距离下班还有：{diff_hour(timeNow, after_work)[0]}小时{diff_hour(timeNow, after_work)[1]}分钟\n💰距离发工资还有：{diff_day(time_now, salary_Day)}天\n🍁距离元旦还有：{diff_day(time_now, New_Year_Day)}天\n🏮距离国庆还有：{diff_day(time_now, National_Day)}天\n⌚距离疫情开始：{diff_day(epidemic_Day, time_now)}天\n══════════\n有事没事起身去茶水间，去厕所，去廊道走走别老在工位上坐着。上班是帮老板赚钱，摸鱼是赚老板的钱！最后，祝愿天下所有摸鱼人，都能愉快的渡过每一天💪'
+        msg = f'【摸鱼办】提醒您：\n🍁今天是{time.strftime("%m")}月{time.strftime("%d")}日 {week_list[int(datetime.date.today().isoweekday())-1]}\n👨‍💻{get_time()}摸鱼人！工作再累，一定不要忘记喝水哦！希望此刻看到消息的人可以和我一起来喝一杯水。及时排便洗手，记得关门。一小时后我会继续提醒大家喝水，和我一起成为一天喝八杯水的人吧！\n══════════\n🚇距离下班还有：{diff_hour(timeNow, after_work)[0]}小时{diff_hour(timeNow, after_work)[1]}分钟\n💰距离发工资还有：{diff_day(time_now, salary_Day)}天\n🍁距离元旦还有：{diff_day(time_now, New_Year_Day)}天\n🏮距离除夕还有：{diff_day(time_now, New_Year)}天\n🚩距离国庆还有：{diff_day(time_now, National_Day)}天\n⌚距离疫情开始：{diff_day(epidemic_Day, time_now)}天\n══════════\n有事没事起身去茶水间，去厕所，去廊道走走别老在工位上坐着。上班是帮老板赚钱，摸鱼是赚老板的钱！最后，祝愿天下所有摸鱼人，都能愉快的渡过每一天💪'
     elif (
         int(datetime.date.today().isoweekday()) == 6
         or int(datetime.date.today().isoweekday()) == 7
