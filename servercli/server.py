@@ -323,7 +323,9 @@ def handle_recv_msg(msgJson):
         ):
             msg = ai_reply(keyword)
             ws.send(send_msg(msg, roomid=roomid, wxid=senderid, nickname=nickname))
-        elif "摸鱼日历" == keyword or "摸鱼日记" == keyword:
+        elif (
+            "摸鱼日历" == keyword or "摸鱼日记" == keyword
+        ) and roomid not in blacklist_room_id.split(","):
             msg = Touch_the_fish()
             ws.send(send_msg(msg, wxid=roomid))
     else:
