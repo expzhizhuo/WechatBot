@@ -319,13 +319,22 @@ def Touch_the_fish():
     time_now = time.strftime("%Y-%m-%d")
     timeNow = time.strftime("%Y-%m-%d %X")
     New_Year_Day = str(int(time.strftime("%Y")) + 1) + "-01-01"
-    salary_Day = (
-        str(int(time.strftime("%Y")))
-        + "-"
-        + str(int(time.strftime("%m")) + 1)
-        + "-"
-        + str(salary_day)
-    )
+    if int(time.strftime("%d")) > int(salary_day):
+        salary_Day = (
+            str(int(time.strftime("%Y")))
+            + "-"
+            + str(int(time.strftime("%m")) + 1)
+            + "-"
+            + str(salary_day)
+        )
+    else:
+        salary_Day = (
+            str(int(time.strftime("%Y")))
+            + "-"
+            + str(int(time.strftime("%m")))
+            + "-"
+            + str(salary_day)
+        )
     epidemic_Day = "2019-12-16"
     National_Day = str(int(time.strftime("%Y")) + 1) + "-10-01"
     after_work = f"{time_now} {after_work_time}:00"
