@@ -326,13 +326,13 @@ def handle_recv_msg(msgJson):
         elif "早报" == keyword or "安全新闻早报" == keyword:
             msg = get_freebuf_news()
             ws.send(send_msg(msg, wxid=roomid))
-        elif "查询ip" in keyword:
+        elif "查询ip" in keyword or "ip查询" in keyword:
             ip_list = (
-                keyword.replace("查询ip", "")
+                keyword.replace("ip", "")
+                .replace("查询", "")
                 .replace(":", "")
                 .replace(" ", "")
                 .replace("：", "")
-                .replace("ip查询")
             )
             reg = "((2(5[0-5]|[0-4]\d))|[0-1]?\d{1,2})(\.((2(5[0-5]|[0-4]\d))|[0-1]?\d{1,2})){3}"
             if re.match(reg, ip_list) is None:
