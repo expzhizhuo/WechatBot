@@ -26,6 +26,8 @@ morning_url = config.get("apiService", "morning_url")
 ai_reply_url = config.get("apiService", "ai_reply_url")
 after_work_time = config.get("server", "after_work_time")
 salary_day = config.get("server", "salary_day")
+threatbook_key = config.get("apiService", "threatbook_key")
+threatbook_url = config.get("apiService", "threatbook_url")
 
 
 # 获取历史的今天事件
@@ -360,4 +362,57 @@ def Touch_the_fish():
         msg = "都双休日了还摸什么鱼，快滚去睡觉！"
     else:
         msg = "各部门请注意，下班时间已过！！！请滚，不要浪费电费，记得发日报！\n[Doge] over"
+    return msg
+
+
+# 恶意IP查询
+def search_ip(ips):
+    output(f"查询ip：{ips}")
+    try:
+
+        data = {
+            "apikey": threatbook_key,
+            "resource": ips,
+        }
+
+        resp = requests.post(
+            threatbook_url,
+            data=data,
+            timeout=10,
+            verify=False,
+        )
+        if resp.status_code == 200 and resp.json()["response_code"] == 0:
+            # 查风险等级
+            sec_level = resp.json()["data"]["{}".format(ips)]["severity"]
+            # 查是否恶意IP
+            is_malicious = resp.json()["data"]["{}".format(ips)]["is_malicious"]
+            # 查可信度
+            confidence_level = resp.json()["data"]["{}".format(ips)]["confidence_level"]
+            # 查IP归属国家
+            country = resp.json()["data"]["{}".format(ips)]["basic"]["location"][
+                "country"
+            ]
+            # 查IP归属省份
+            province = resp.json()["data"]["{}".format(ips)]["basic"]["location"][
+                "province"
+            ]
+            # 查IP归属城市
+            city = resp.json()["data"]["{}".format(ips)]["basic"]["location"]["city"]
+            # 将IP归属的国家、省份、城市合并成一个字符串
+            location = country + "-" + province + "-" + city
+            # 查威胁类型
+            judgments = ""
+            for j in resp.json()["data"]["{}".format(ips)]["judgments"]:
+                judgments += j + " "
+            if is_malicious:
+                is_malicious_msg = "是"
+            else:
+                is_malicious_msg = "否"
+            msg = f"===================\n[+]ip：{ips}\n[+]风险等级：{sec_level}\n[+]是否为恶意ip：{is_malicious_msg}\n[+]可信度：{confidence_level}\n[+]威胁类型：{str(judgments)}\n[+]ip归属地：{location}\n更新时间：{resp.json()['data']['{}'.format(ips)]['update_time']}\n==================="
+        else:
+            msg = f"查询失败，返回信息：{resp.json()['verbose_msg']}"
+            output(f"ERROR：{msg}")
+    except Exception as e:
+        output(f"ERROR: {e}")
+        msg = f"查询出错请稍后重试，错误信息：{e}"
     return msg

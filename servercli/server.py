@@ -1,7 +1,6 @@
 import json
 import warnings
 import websocket
-from bs4 import BeautifulSoup
 from httpcli.http_server import *
 from httpcli.everyday_news import *
 
@@ -326,6 +325,22 @@ def handle_recv_msg(msgJson):
             ws.send(send_msg(msg, wxid=roomid))
         elif "早报" == keyword or "安全新闻早报" == keyword:
             msg = get_freebuf_news()
+            ws.send(send_msg(msg, wxid=roomid))
+        elif "查询ip" in keyword:
+            ip_list = (
+                keyword.replace("查询ip", "")
+                .replace(":", "")
+                .replace(" ", "")
+                .replace("：", "")
+                .replace("ip查询")
+            )
+            reg = "((2(5[0-5]|[0-4]\d))|[0-1]?\d{1,2})(\.((2(5[0-5]|[0-4]\d))|[0-1]?\d{1,2})){3}"
+            if re.match(reg, ip_list) is None:
+                msg = "请输入ip查询，例：ip查询：127.0.0.1"
+            elif len(ip_list) > 0 and re.match(reg, ip_list):
+                msg = search_ip(ip_list)
+            else:
+                msg = ""
             ws.send(send_msg(msg, wxid=roomid))
     else:
         if keyword == "ding":
