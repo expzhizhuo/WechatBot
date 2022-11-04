@@ -335,10 +335,11 @@ def handle_recv_msg(msgJson):
                 .replace("：", "")
             )
             reg = "((2(5[0-5]|[0-4]\d))|[0-1]?\d{1,2})(\.((2(5[0-5]|[0-4]\d))|[0-1]?\d{1,2})){3}"
-            if re.match(reg, ip_list) is None:
+            ip_result = re.match(reg, str(ip_list))
+            if ip_result is None:
                 msg = "请输入ip查询，例：ip查询：127.0.0.1"
-            elif len(ip_list) > 0 and re.match(reg, ip_list):
-                msg = search_ip(ip_list)
+            elif len(ip_list) > 0 and ip_result.group():
+                msg = search_ip(ip_result.group())
             else:
                 msg = ""
             ws.send(send_msg(msg, wxid=roomid))
