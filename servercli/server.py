@@ -1,6 +1,7 @@
 import json
 import warnings
 import websocket
+from bs4 import BeautifulSoup
 from httpcli.http_server import *
 from httpcli.everyday_news import *
 
@@ -270,7 +271,12 @@ def handle_recv_msg(msgJson):
         elif keyword == "鸡汤" and roomid not in blacklist_room_id.split(","):
             msg = get_chicken_soup()
             ws.send(send_msg(msg, roomid=roomid, wxid=senderid, nickname=nickname))
-        elif "md5解密" in keyword or "md5" in keyword or "MD5解密" in keyword:
+        elif (
+            keyword.startswith("md5解密")
+            or keyword.startswith("md5")
+            or keyword.startswith("MD5")
+            or keyword.startswith("MD5解密")
+        ):
             msg = get_md5(keyword)
             if len(msg) > 2:
                 ws.send(send_msg(msg, roomid=roomid, wxid=senderid, nickname=nickname))

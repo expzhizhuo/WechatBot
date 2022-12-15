@@ -240,8 +240,10 @@ def get_morning_info():
     output("Get morning info")
     try:
         resp = requests.get(morning_url, timeout=5, verify=False)
-        if resp.status_code == 200 and resp.json()["code"] == 1:
-            msg = resp.json()["data"][0]["content"]
+        if resp.status_code == 200 and resp.json()["code"] == 200:
+            msg = resp.json()["data"]["content"]
+        else:
+            msg = f"未获取到早安寄语，接口返回信息：{resp.json()}"
     except Exception as e:
         output(f"ERROR：{e}")
         msg = f"早安寄语接口调用出错，ERROR：{e}"
@@ -331,13 +333,20 @@ def Touch_the_fish():
     timeNow = time.strftime("%Y-%m-%d %X")
     New_Year_Day = str(int(time.strftime("%Y")) + 1) + "-01-01"
     if int(time.strftime("%d")) > int(salary_day):
-        salary_Day = (
-            str(int(time.strftime("%Y")))
-            + "-"
-            + str(int(time.strftime("%m")) + 1)
-            + "-"
-            + str(salary_day)
-        )
+        if int(time.strftime("%m")) == 12:
+            salary_Day = (
+                    str(int(time.strftime("%Y"))+1)
+                    + "-01-"
+                    + str(salary_day)
+            )
+        else:
+            salary_Day = (
+                    str(int(time.strftime("%Y")))
+                    + "-"
+                    + str(int(time.strftime("%m")) + 1)
+                    + "-"
+                    + str(salary_day)
+            )
     else:
         salary_Day = (
             str(int(time.strftime("%Y")))

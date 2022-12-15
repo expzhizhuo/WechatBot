@@ -2,7 +2,6 @@ import requests
 from httpcli.output import *
 import os
 import configparser
-from bs4 import BeautifulSoup
 import feedparser
 import re
 import time

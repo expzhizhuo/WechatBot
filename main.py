@@ -31,6 +31,15 @@ def morning_paper_push():
         send_img_room(msg, room_id_list[i])
 
 
+def morning_paper_news_push():
+    time.sleep(5)
+    output("每日安全新闻早报推送")
+    msg = get_freebuf_news()
+    room_id_list = room_id.split(",")
+    for i in range(len(room_id_list)):
+        auto_send_message_room(msg, room_id_list[i])
+
+
 def evening_paper_push():
     output("每日晚间安全资讯推送")
     msg = get_safety_news()
@@ -103,14 +112,16 @@ def auto_push():
     schedule.every().day.at(set_time_am_today).do(everyday_morning_push)
     # 早报自动推送
     schedule.every().day.at(set_time_am).do(morning_paper_push)
+    # 每日安全新闻早报推送
+    schedule.every().day.at(set_time_am).do(morning_paper_news_push)
     # 摸鱼日历自动推送
-    schedule.every().day.at(set_fish_time).do(everyday_fish_push)
+    # schedule.every().day.at(set_fish_time).do(everyday_fish_push)
     # 晚报自动推送
     schedule.every().day.at(set_time_pm).do(evening_paper_push)
     # 下班通知推送
     schedule.every().day.at(after_work_time).do(everyday_after_work_push)
     # 番茄下班专属通知推送
-    schedule.every().day.at("21:00").do(tomato_after_work_push)
+    # schedule.every().day.at("21:00").do(tomato_after_work_push)
     while True:
         schedule.run_pending()
 
