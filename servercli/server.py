@@ -81,15 +81,18 @@ def get_personal_info():
         "wxid": "null",
     }
     respJson = send(uri, data)
-    wechatBotInfo = f"""
-
-    WechatBot登录信息
-
-    微信昵称：{json.loads(respJson["content"])['wx_name']}
-    微信号：{json.loads(respJson["content"])['wx_code']}
-    微信id：{json.loads(respJson["content"])['wx_id']}
-    启动时间：{respJson['time']}
-    """
+    if json.loads(respJson["content"])['wx_name']:
+        wechatBotInfo = f"""
+    
+        WechatBot登录信息
+    
+        微信昵称：{json.loads(respJson["content"])['wx_name']}
+        微信号：{json.loads(respJson["content"])['wx_code']}
+        微信id：{json.loads(respJson["content"])['wx_id']}
+        启动时间：{respJson['time']}
+        """
+    else:
+        wechatBotInfo = respJson
     output(wechatBotInfo)
 
 

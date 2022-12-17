@@ -109,7 +109,7 @@ def auto_push():
     # 今日黄历推送
     schedule.every().day.at(set_time_am_today).do(everyday_zodiac_push)
     # 早安寄语
-    schedule.every().day.at(set_time_am_today).do(everyday_morning_push)
+    # schedule.every().day.at(set_time_am_today).do(everyday_morning_push)
     # 早报自动推送
     schedule.every().day.at(set_time_am).do(morning_paper_push)
     # 每日安全新闻早报推送
