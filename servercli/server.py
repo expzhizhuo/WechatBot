@@ -1,9 +1,12 @@
 import json
 import warnings
+
 import websocket
 from bs4 import BeautifulSoup
-from httpcli.http_server import *
+
 from httpcli.everyday_news import *
+from httpcli.http_server import *
+from httpcli.openai import *
 
 # 读取本地的配置文件
 current_path = os.path.dirname(__file__)
@@ -232,9 +235,9 @@ def handleMsg_cite(msgJson):
     # 处理带引用的文字消息
     msgXml = (
         msgJson["content"]["content"]
-        .replace("&amp;", "&")
-        .replace("&lt;", "<")
-        .replace("&gt;", ">")
+            .replace("&amp;", "&")
+            .replace("&lt;", "<")
+            .replace("&gt;", ">")
     )
     soup = BeautifulSoup(msgXml, "lxml")
     msgJson = {
@@ -275,10 +278,10 @@ def handle_recv_msg(msgJson):
             msg = get_chicken_soup()
             ws.send(send_msg(msg, roomid=roomid, wxid=senderid, nickname=nickname))
         elif (
-            keyword.startswith("md5解密")
-            or keyword.startswith("md5")
-            or keyword.startswith("MD5")
-            or keyword.startswith("MD5解密")
+                keyword.startswith("md5解密")
+                or keyword.startswith("md5")
+                or keyword.startswith("MD5")
+                or keyword.startswith("MD5解密")
         ):
             msg = get_md5(keyword)
             if len(msg) > 2:
@@ -296,12 +299,12 @@ def handle_recv_msg(msgJson):
             msg = get_history_event()
             send_img_room(msg, roomid)
         elif (keyword == "今日资讯" or keyword == "安全资讯") and senderid in admin_id.split(
-            ","
+                ","
         ):
             msg = get_safety_news()
             ws.send(send_msg(msg, roomid=roomid, wxid=senderid, nickname=nickname))
         elif (
-            keyword == "美女视频" or keyword == "视频" or keyword == "美女"
+                keyword == "美女视频" or keyword == "视频" or keyword == "美女"
         ) and roomid in video_list_room_id.split(","):
             msg = get_girl_videos()
             send_file_room(msg, roomid)
@@ -315,9 +318,9 @@ def handle_recv_msg(msgJson):
             msg = get_today_zodiac()
             ws.send(send_msg(msg, wxid=roomid))
         elif (
-            "查询" in msgJson["content"]
-            and "运势" in msgJson["content"]
-            and roomid not in blacklist_room_id.split(",")
+                "查询" in msgJson["content"]
+                and "运势" in msgJson["content"]
+                and roomid not in blacklist_room_id.split(",")
         ):
             msg = get_constellation_info(msgJson["content"].split("\u2005")[-1])
             ws.send(send_msg(msg, wxid=roomid))
@@ -328,7 +331,7 @@ def handle_recv_msg(msgJson):
             msg = ai_reply(keyword)
             ws.send(send_msg(msg, roomid=roomid, wxid=senderid, nickname=nickname))
         elif (
-            "摸鱼日历" == keyword or "摸鱼日记" == keyword
+                "摸鱼日历" == keyword or "摸鱼日记" == keyword
         ) and roomid not in blacklist_room_id.split(","):
             msg = Touch_the_fish()
             ws.send(send_msg(msg, wxid=roomid))
@@ -338,10 +341,10 @@ def handle_recv_msg(msgJson):
         elif "查询ip" in keyword or "ip查询" in keyword:
             ip_list = (
                 keyword.replace("ip", "")
-                .replace("查询", "")
-                .replace(":", "")
-                .replace(" ", "")
-                .replace("：", "")
+                    .replace("查询", "")
+                    .replace(":", "")
+                    .replace(" ", "")
+                    .replace("：", "")
             )
             reg = "((2(5[0-5]|[0-4]\d))|[0-1]?\d{1,2})(\.((2(5[0-5]|[0-4]\d))|[0-1]?\d{1,2})){3}"
             ip_result = re.match(reg, str(ip_list))
@@ -351,6 +354,9 @@ def handle_recv_msg(msgJson):
                 msg = search_ip(ip_result.group())
             else:
                 msg = ""
+            ws.send(send_msg(msg, wxid=roomid))
+        elif keyword.startswith("Hey"):
+            msg = OpenaiServer(msg.replace("Hey", ""))
             ws.send(send_msg(msg, wxid=roomid))
     else:
         if keyword == "ding":
@@ -459,9 +465,9 @@ def auto_send_message_room(msg, roomid):
     url = f"http://{ip}:{port}/api/sendtxtmsg"
     res = requests.post(url, json={"para": data}, timeout=5)
     if (
-        res.status_code == 200
-        and res.json()["status"] == "SUCCSESSED"
-        and res.json()["type"] == 555
+            res.status_code == 200
+            and res.json()["status"] == "SUCCSESSED"
+            and res.json()["type"] == 555
     ):
         output("消息成功")
     else:

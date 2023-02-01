@@ -25,14 +25,16 @@ config.ini详解
 ip = 127.0.0.1
 port = 5555
 # 管理员wxid
-admin_id = wxid_kb0e7h9icqqv22,wxid_6vxrrvjff6pg22,wxid_fys2fico9put22,wxid_lb33d6uyarmv22
+admin_id = wxid_kb0e7h9icqqv22,wxid_6vxrrvjff6pg22,wxid_fys2fico9put22,wxid_lb33d6uyarmv22,
 # 推送的微信群聊地址
-room_id = 23117228686@chatroom,24472020852@chatroom,20809144388@chatroom,22261634025@chatroom,22868513156@chatroom
+room_id = 23117228686@chatroom,24472020852@chatroom,20809144388@chatroom,22261634025@chatroom,22868513156@chatroom,25348406777@chatroom,22108828312@chatroom,24749035253@chatroom,19752248739@chatroom,24303327388@chatroom,25455028831@chatroom
 # 视频权限群聊地址
-video_list_room_id = 19820015740@chatroom,23117228686@chatroom,25348406777@chatroom,20809144388@chatroom,25142607072@chatroom,39218917883@chatroom
+video_list_room_id = 19820015740@chatroom,23117228686@chatroom,25348406777@chatroom,20809144388@chatroom,25142607072@chatroom,39218917883@chatroom,24749035253@chatroom,19752248739@chatroom
+# 群娱乐功能黑名单
+blacklist_room_id = 24472020852@chatroom,
 # 早报自动推送时间
 set_time_am = 09:00
-# 晚间咨询自动推送时间
+# 晚间资讯自动推送时间
 set_time_pm = 17:00
 # 推送今日黄历
 set_time_am_today = 08:30
@@ -44,6 +46,11 @@ after_work_time = 18:00
 salary_day = 10
 
 [apiService]
+# openai用户key
+openai_key = 
+# 微步社区的key
+threatbook_key = 自己去微步社区个人中心查看
+threatbook_url = https://api.threatbook.cn/v3/scene/ip_reputation
 # MD5解密接口
 md5_url = 
 # 舔狗日记接口
@@ -57,7 +64,7 @@ weather_url = https://www.tianqiapi.com/free/day?appid=自己的key&appsecret=�
 # 美女视频接口
 girl_videos_url = https://tucdn.wpon.cn/api-girl/
 # 当日安全资讯
-secwiki_url = https://www.sec-wiki.com/news/rss
+xz_url = https://xz.aliyun.com/feed
 freebuf_url = https://www.freebuf.com/feed
 qax_url = https://forum.butian.net/Rss
 anquanke_url = https://www.anquanke.com/knowledge
@@ -135,6 +142,7 @@ python3 main.py
 - ***2022-11-04新增恶意ip查询，调用的微步接口，每天限制50次，修改早晚日报，修改部分代码逻辑**
 - ***修复摸鱼日记diff算法错误，修改一处接口调用**
 - ***开发计划：预计本月添加openai机器人，目前我阳了，等我转阴后实现此功能。**
+- ***2023-02-01新增功能openai机器人功能**
 - 实现GitHub实时监控
 - 实现第三方工具实时推送
 - 待定，有需求可以提交lessus
