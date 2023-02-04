@@ -27,8 +27,12 @@ def OpenaiServer(msg=None):
         else:
             response = openai.Completion.create(
                 model="text-davinci-003",
-                prompt=msg,
+                prompt=str(msg),
                 temperature=0.6,
+                max_tokens=600,
+                top_p=1.0,
+                frequency_penalty=0.0,
+                presence_penalty=0.0,
             )
             print(response.choices[0].text)
             msg = response.choices[0].text
