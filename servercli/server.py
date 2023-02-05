@@ -356,7 +356,7 @@ def handle_recv_msg(msgJson):
                 msg = ""
             ws.send(send_msg(msg, wxid=roomid))
         elif keyword.startswith("Hey"):
-            msg = OpenaiServer(msg.replace("Hey", ""))
+            msg = OpenaiServer(keyword.replace("Hey", "")).replace("\n\n", "")
             ws.send(send_msg(msg, wxid=roomid))
     else:
         if keyword == "ding":
