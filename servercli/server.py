@@ -271,7 +271,7 @@ def handle_recv_msg(msgJson):
     nickname = get_member_nick(roomid, senderid)
     if roomid:
         if keyword == "test" and senderid in admin_id.split(","):
-            msg = "Server is Onloine"
+            msg = "Server is Online"
             ws.send(send_msg(msg, roomid=roomid, wxid=senderid, nickname=nickname))
             # 这里是群消息的回复
         elif keyword == "鸡汤" and roomid not in blacklist_room_id.split(","):
