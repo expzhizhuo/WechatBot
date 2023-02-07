@@ -1,10 +1,11 @@
-import requests
-from httpcli.output import *
-import os
 import configparser
-import feedparser
+import os
 import re
-import time
+
+import feedparser
+import requests
+
+from httpcli.output import *
 
 # 读取本地的配置文件
 current_path = os.path.dirname(__file__)
@@ -74,18 +75,18 @@ def get_freebuf_news():
         for buf in range(length):
             try:
                 if (
-                    f'tm_year={time.strftime("%Y")}'
-                    in str(rs1.entries[buf]["published_parsed"])
-                    and f'tm_mon={time.strftime("%m")}'
-                    in str(rs1.entries[buf]["published_parsed"])
-                    and f'tm_mday={str(int(time.strftime("%d")) - 1)}'
-                    in str(rs1.entries[buf]["published_parsed"])
+                        f'tm_year={int(time.strftime("%Y"))}'
+                        in str(rs1.entries[buf]["published_parsed"])
+                        and f'tm_mon={int(time.strftime("%m"))}'
+                        in str(rs1.entries[buf]["published_parsed"])
+                        and f'tm_mday={str(int(time.strftime("%d")) - 1)}'
+                        in str(rs1.entries[buf]["published_parsed"])
                 ):
                     url_f = rs1.entries[buf]["link"]
                     title_f = (
                         rs1.entries[buf]["title_detail"]["value"]
-                        .replace("FreeBuf早报 |", "")
-                        .replace(" ", "")
+                            .replace("FreeBuf早报 |", "")
+                            .replace(" ", "")
                     )
                     link4 = "\n" + title_f + "\n" + url_f + "\n"
                     str_list += link4
@@ -149,11 +150,11 @@ def get_anquanke_news():
         rs1.encoding = "utf-8"
         resp_text = (
             rs1.text.replace("\xa9", "")
-            .replace("\n", "")
-            .replace("&gt;", "")
-            .replace(" ", "")
-            .replace("                        ", "")
-            .replace("                               ", "")
+                .replace("\n", "")
+                .replace("&gt;", "")
+                .replace(" ", "")
+                .replace("                        ", "")
+                .replace("                               ", "")
         )
         newlist = re.findall(
             '<divclass="info-content"><divclass="title"><atarget="_blank"rel="noopenernoreferrer"href="(.*?)">(.*?)</a></div><divclass="tagshide-in-mobile-device">',
@@ -195,7 +196,7 @@ def get_safety_news():
     news_list = ""
     get_xz_news()
     # get_freebuf_news()
-    get_qax_news()
+    # get_qax_news()
     get_anquanke_news()
     output("获取成功")
     news_list += "\nCreated by zhizhuo \n{}".format(time.strftime("%Y-%m-%d %X"))

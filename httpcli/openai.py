@@ -34,8 +34,9 @@ def OpenaiServer(msg=None):
                 frequency_penalty=0.0,
                 presence_penalty=0.0,
             )
-            print(response.choices[0].text)
-            msg = response.choices[0].text
+            msg = "来自openai回复结果：\n\r"
+            msg += response.choices[0].text
+            msg += "\n\rCreate by openai server"
             return msg
     except Exception as e:
         output(f"ERROR：{e.message}")
