@@ -355,8 +355,11 @@ def handle_recv_msg(msgJson):
             else:
                 msg = ""
             ws.send(send_msg(msg, wxid=roomid))
-        elif keyword.startswith("Hey"):
-            msg = OpenaiServer(keyword.replace("Hey", "")).replace("\n\n", "")
+        elif keyword.startswith("Hey") or keyword.startswith("hey"):
+            msg = OpenaiServer(keyword.replace("Hey", "")).replace("hey", "").replace("\n\n", "\n")
+            ws.send(send_msg(msg, wxid=roomid))
+        elif keyword.startswith("端口扫描") or keyword.startswith("端口查询") or keyword.startswith("port"):
+            msg = PortScan(keyword.replace("端口扫描", "").replace("端口查询", "").replace("port", "").replace(" ", ""))
             ws.send(send_msg(msg, wxid=roomid))
     else:
         if keyword == "ding":
@@ -409,6 +412,12 @@ def handle_recv_msg(msgJson):
             ws.send(send_msg(msg, wxid=senderid))
         elif "早报" == keyword or "安全新闻早报" == keyword:
             msg = get_freebuf_news()
+            ws.send(send_msg(msg, wxid=senderid))
+        elif keyword.startswith("Hey") or keyword.startswith("hey"):
+            msg = OpenaiServer(keyword.replace("Hey", "")).replace("hey", "").replace("\n\n", "")
+            ws.send(send_msg(msg, wxid=senderid))
+        elif keyword.startswith("端口扫描") or keyword.startswith("端口查询") or keyword.startswith("port"):
+            msg = PortScan(keyword.replace("端口扫描", "").replace("端口查询", "").replace("port", "").replace(" ", ""))
             ws.send(send_msg(msg, wxid=senderid))
         else:
             msg = ai_reply(keyword)

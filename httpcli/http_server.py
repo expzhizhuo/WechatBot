@@ -1,11 +1,14 @@
+import configparser
 import datetime
 import os
-import re
-import requests
-from httpcli.output import *
-import configparser
 import random
+import re
+from urllib.parse import urlparse
+
+import requests
 from zhdate import ZhDate as lunar_date
+
+from httpcli.output import *
 
 # 读取本地的配置文件
 current_path = os.path.dirname(__file__)
@@ -28,6 +31,7 @@ after_work_time = config.get("server", "after_work_time")
 salary_day = config.get("server", "salary_day")
 threatbook_key = config.get("apiService", "threatbook_key")
 threatbook_url = config.get("apiService", "threatbook_url")
+fofamap = config.get("apiService", "fofamap")
 
 
 # 获取历史的今天事件
@@ -424,4 +428,30 @@ def search_ip(ips):
     except Exception as e:
         output(f"ERROR: {e}")
         msg = f"查询出错请稍后重试，错误信息：{e}"
+    return msg
+    
+
+# 端口扫描
+def PortScan(ip=None):
+    port = ""
+    try:
+        if ip is None:
+            output(f"ip is Node")
+        else:
+            ip = urlparse(ip).path or urlparse(ip).netloc
+            resp = requests.get(fofamap + str(ip), timeout=10, verify=False)
+            if resp.status_code == 200 and 'error' not in resp.json():
+                data = resp.json()
+                result = f"查询ip：{data['ip']}\n"
+                if len(data['domain']) > 1:
+                    result += f"domain：{data['domain']}\n"
+                    result += f"推荐fofa查询语句\nip='{data['ip']}\ndomain='{data['domain']}'\n"
+                for a in data['ports']:
+                    port += f"{str(a['port'])}-{str(a['protocol'])}\n"
+                result += f"----端口&协议----\n{port}"
+                result += "\nCreated by zhizhuo\n端口扫描数据来自：\nhttps://amap.fofa.info/"
+                msg = result
+    except Exception as e:
+        output(f"Error：{e}")
+        msg = f"端口扫描出错，错误信息：{e}"
     return msg
