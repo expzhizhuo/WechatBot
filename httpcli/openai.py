@@ -24,6 +24,7 @@ def OpenaiServer(msg=None):
     try:
         if msg is None:
             output(f'ERROR：msg is None')
+            msg = ""
         else:
             response = openai.Completion.create(
                 model="text-davinci-003",
@@ -37,8 +38,7 @@ def OpenaiServer(msg=None):
             msg = "来自openai回复结果：\n"
             msg += response.choices[0].text
             msg += "\n\rCreate by openai server"
-            return msg
     except Exception as e:
         output(f"ERROR：{e.message}")
         msg = e.message
-        return msg
+    return msg
