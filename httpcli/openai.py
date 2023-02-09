@@ -34,7 +34,7 @@ def OpenaiServer(msg=None):
                 frequency_penalty=0.0,
                 presence_penalty=0.0,
             )
-            msg = "来自openai回复结果：\n\r"
+            msg = "来自openai回复结果：\n"
             msg += response.choices[0].text
             msg += "\n\rCreate by openai server"
             return msg

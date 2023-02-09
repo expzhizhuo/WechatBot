@@ -206,9 +206,9 @@ def get_Funny_jokes():
         )
         if resp.status_code == 200 and resp.json()["code"] == 1:
             msg = (
-                resp.json()["data"]["list"][content_num]["content"]
-                + "\n\n更新时间："
-                + resp.json()["data"]["list"][content_num]["updateTime"]
+                    resp.json()["data"]["list"][content_num]["content"]
+                    + "\n\n更新时间："
+                    + resp.json()["data"]["list"][content_num]["updateTime"]
             )
         else:
             msg = f"ERROR：接口请求请求异常，接口状态：{resp.status_code},错误信息：{resp.json()['msg']}"
@@ -326,11 +326,11 @@ def get_time():
 def Touch_the_fish():
     # 获取每年除夕的阳历日期
     New_Year = (
-        str(int(time.strftime("%Y")) + 1)
-        + "-"
-        + str(lunar_date(int(time.strftime("%Y")), 12, 30).to_datetime().month)
-        + "-"
-        + str(lunar_date(int(time.strftime("%Y")), 12, 30).to_datetime().day)
+            str(int(time.strftime("%Y")) + 1)
+            + "-"
+            + str(lunar_date(int(time.strftime("%Y")), 12, 30).to_datetime().month)
+            + "-"
+            + str(lunar_date(int(time.strftime("%Y")), 12, 30).to_datetime().day)
     )
     week_list = ["星期一", "星期二", "星期三", "星期四", "星期五", "星期六", "星期日"]
     time_now = time.strftime("%Y-%m-%d")
@@ -339,7 +339,7 @@ def Touch_the_fish():
     if int(time.strftime("%d")) > int(salary_day):
         if int(time.strftime("%m")) == 12:
             salary_Day = (
-                    str(int(time.strftime("%Y"))+1)
+                    str(int(time.strftime("%Y")) + 1)
                     + "-01-"
                     + str(salary_day)
             )
@@ -353,24 +353,24 @@ def Touch_the_fish():
             )
     else:
         salary_Day = (
-            str(int(time.strftime("%Y")))
-            + "-"
-            + str(int(time.strftime("%m")))
-            + "-"
-            + str(salary_day)
+                str(int(time.strftime("%Y")))
+                + "-"
+                + str(int(time.strftime("%m")))
+                + "-"
+                + str(salary_day)
         )
     epidemic_Day = "2019-12-16"
     National_Day = str(int(time.strftime("%Y")) + 1) + "-10-01"
     after_work = f"{time_now} {after_work_time}:00"
     if (
-        diff_hour(timeNow, after_work)[0] >= 0
-        and diff_hour(timeNow, after_work)[1] >= 0
-        and int(datetime.date.today().isoweekday()) < 6
+            diff_hour(timeNow, after_work)[0] >= 0
+            and diff_hour(timeNow, after_work)[1] >= 0
+            and int(datetime.date.today().isoweekday()) < 6
     ):
-        msg = f'【摸鱼办】提醒您：\n🍁今天是{time.strftime("%m")}月{time.strftime("%d")}日 {week_list[int(datetime.date.today().isoweekday())-1]}\n👨‍💻{get_time()}摸鱼人！工作再累，一定不要忘记喝水哦！希望此刻看到消息的人可以和我一起来喝一杯水。及时排便洗手，记得关门。一小时后我会继续提醒大家喝水，和我一起成为一天喝八杯水的人吧！\n══════════\n🚇距离下班还有：{diff_hour(timeNow, after_work)[0]}小时{diff_hour(timeNow, after_work)[1]}分钟\n💰距离发工资还有：{diff_day(time_now, salary_Day)}天\n🍁距离元旦还有：{diff_day(time_now, New_Year_Day)}天\n🏮距离除夕还有：{diff_day(time_now, New_Year)}天\n🚩距离国庆还有：{diff_day(time_now, National_Day)}天\n⌚距离疫情开始：{diff_day(epidemic_Day, time_now)}天\n══════════\n有事没事起身去茶水间，去厕所，去廊道走走别老在工位上坐着。上班是帮老板赚钱，摸鱼是赚老板的钱！最后，祝愿天下所有摸鱼人，都能愉快的渡过每一天💪'
+        msg = f'【摸鱼办】提醒您：\n🍁今天是{time.strftime("%m")}月{time.strftime("%d")}日 {week_list[int(datetime.date.today().isoweekday()) - 1]}\n👨‍💻{get_time()}摸鱼人！工作再累，一定不要忘记喝水哦！希望此刻看到消息的人可以和我一起来喝一杯水。及时排便洗手，记得关门。一小时后我会继续提醒大家喝水，和我一起成为一天喝八杯水的人吧！\n══════════\n🚇距离下班还有：{diff_hour(timeNow, after_work)[0]}小时{diff_hour(timeNow, after_work)[1]}分钟\n💰距离发工资还有：{diff_day(time_now, salary_Day)}天\n🍁距离元旦还有：{diff_day(time_now, New_Year_Day)}天\n🏮距离除夕还有：{diff_day(time_now, New_Year)}天\n🚩距离国庆还有：{diff_day(time_now, National_Day)}天\n⌚距离疫情开始：{diff_day(epidemic_Day, time_now)}天\n══════════\n有事没事起身去茶水间，去厕所，去廊道走走别老在工位上坐着。上班是帮老板赚钱，摸鱼是赚老板的钱！最后，祝愿天下所有摸鱼人，都能愉快的渡过每一天💪'
     elif (
-        int(datetime.date.today().isoweekday()) == 6
-        or int(datetime.date.today().isoweekday()) == 7
+            int(datetime.date.today().isoweekday()) == 6
+            or int(datetime.date.today().isoweekday()) == 7
     ):
         msg = "都双休日了还摸什么鱼，快滚去睡觉！"
     else:
@@ -429,7 +429,7 @@ def search_ip(ips):
         output(f"ERROR: {e}")
         msg = f"查询出错请稍后重试，错误信息：{e}"
     return msg
-    
+
 
 # 端口扫描
 def PortScan(ip=None):
@@ -442,15 +442,16 @@ def PortScan(ip=None):
             resp = requests.get(fofamap + str(ip), timeout=10, verify=False)
             if resp.status_code == 200 and 'error' not in resp.json():
                 data = resp.json()
-                result = f"查询ip：{data['ip']}\n"
+                result = f"查询ip：{data['ip']}\n推荐fofa查询语句\nip='{data['ip']}'\n"
                 if len(data['domain']) > 1:
-                    result += f"domain：{data['domain']}\n"
-                    result += f"推荐fofa查询语句\nip='{data['ip']}\ndomain='{data['domain']}'\n"
+                    result += f"domain='{data['domain']}'\n"
                 for a in data['ports']:
                     port += f"{str(a['port'])}-{str(a['protocol'])}\n"
                 result += f"----端口&协议----\n{port}"
                 result += "\nCreated by zhizhuo\n端口扫描数据来自：\nhttps://amap.fofa.info/"
                 msg = result
+            else:
+                msg = "未查询到"
     except Exception as e:
         output(f"Error：{e}")
         msg = f"端口扫描出错，错误信息：{e}"
