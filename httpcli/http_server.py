@@ -360,7 +360,10 @@ def Touch_the_fish():
                 + str(salary_day)
         )
     epidemic_Day = "2019-12-16"
-    National_Day = str(int(time.strftime("%Y")) + 1) + "-10-01"
+    if int(time.strftime("%m")) > 10 and int(time.strftime("%d")) > 1:
+        National_Day = str(int(time.strftime("%Y")) + 1) + "-10-01"
+    else:
+        National_Day = str(int(time.strftime("%Y"))) + "-10-01"
     after_work = f"{time_now} {after_work_time}:00"
     if (
             diff_hour(timeNow, after_work)[0] >= 0
