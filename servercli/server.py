@@ -18,6 +18,7 @@ port = config.get("server", "port")
 admin_id = config.get("server", "admin_id")
 video_list_room_id = config.get("server", "video_list_room_id")
 blacklist_room_id = config.get("server", "blacklist_room_id")
+openai_room_id = config.get("server", "openai_room_id")
 
 # websocket._logging._logger.level = -99
 requests.packages.urllib3.disable_warnings()
@@ -84,18 +85,21 @@ def get_personal_info():
         "wxid": "null",
     }
     respJson = send(uri, data)
-    if json.loads(respJson["content"])['wx_name']:
-        wechatBotInfo = f"""
-    
-        WechatBot登录信息
-    
-        微信昵称：{json.loads(respJson["content"])['wx_name']}
-        微信号：{json.loads(respJson["content"])['wx_code']}
-        微信id：{json.loads(respJson["content"])['wx_id']}
-        启动时间：{respJson['time']}
-        """
-    else:
-        wechatBotInfo = respJson
+    try:
+        if json.loads(respJson["content"])['wx_name']:
+            wechatBotInfo = f"""
+
+            WechatBot登录信息
+
+            微信昵称：{json.loads(respJson["content"])['wx_name']}
+            微信号：{json.loads(respJson["content"])['wx_code']}
+            微信id：{json.loads(respJson["content"])['wx_id']}
+            启动时间：{respJson['time']}
+            """
+        else:
+            wechatBotInfo = respJson
+    except Exception as e:
+        output(f"ERROR:{e}\n这可能是一个新号，存在封号风险！")
     output(wechatBotInfo)
 
 
@@ -228,7 +232,7 @@ def welcome_join(msgJson):
     if "邀请" in msgJson["content"]["content"]:
         roomid = msgJson["content"]["id1"]
         nickname = msgJson["content"]["content"].split('"')[-2]
-    # ws.send(send_msg(f'欢迎新进群的老色批',roomid=roomid,wxid='null',nickname=nickname))
+    ws.send(send_msg(f'欢迎新进群的老色批',roomid=roomid,wxid='null',nickname=nickname))
 
 
 def handleMsg_cite(msgJson):

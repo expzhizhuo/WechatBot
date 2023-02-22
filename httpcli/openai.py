@@ -40,5 +40,5 @@ def OpenaiServer(msg=None):
             msg += "\n\rCreate by openai server"
     except Exception as e:
         output(f"ERROR：{e.message}")
-        msg = e.message
+        msg = e
     return msg
