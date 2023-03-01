@@ -100,6 +100,7 @@ def get_personal_info():
             wechatBotInfo = respJson
     except Exception as e:
         output(f"ERROR:{e}\n这可能是一个新号，存在封号风险！")
+        wechatBotInfo = respJson
     output(wechatBotInfo)
 
 
