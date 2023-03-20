@@ -148,7 +148,7 @@ python3 main.py
 - ***开发计划：预计本月添加openai机器人，目前我阳了，等我转阴后实现此功能。**
 - ***2023-02-01新增功能openai机器人功能**
 - ***2023-02-22 bug修复功能说明，openai的调用关键词是Hey或者hey，出现不回复的情况一般是官方问题。同时发现一个bug，不支持英文版本的wechat，使用openai可以不用科学上网。**
-- ***新增chatgpt3.5，私聊支持连续对话，以及角色扮演，改代码提供由@[Xciny](https://github.com/NewBeginning6)提供**
+- ***2023-03-20 新增chatgpt3.5，私聊支持连续对话，以及角色扮演，该代码提供由@[Xciny](https://github.com/NewBeginning6)提供**
 - 实现GitHub实时监控
 - 实现第三方工具实时推送
 - 待定，有需求可以提交lessus
