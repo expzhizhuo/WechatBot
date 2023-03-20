@@ -1,7 +1,7 @@
 import configparser
 import os
 import re
-
+import datetime
 import feedparser
 import requests
 
@@ -42,7 +42,7 @@ def get_xz_news():
         length = len(rs1.entries)
         for buf in range(length):
             try:
-                if str(time.strftime("%Y-%m-%d")) in str(rs1.entries[buf]["published"]):
+                if str((datetime.date.today() + datetime.timedelta(days=-1)).strftime("%Y-%m-%d")) in str(rs1.entries[buf]["published"]):
                     url_f = rs1.entries[buf]["link"]
                     title_f = rs1.entries[buf]["title_detail"]["value"]
                     link4 = "\n" + title_f + "\n" + url_f + "\n"
@@ -66,9 +66,9 @@ def get_xz_news():
 
 # freebuf 源
 def get_freebuf_news():
-    # global news_list
+    global news_list
     str_list = ""
-    str_list += "#FreeBuf早报\n"
+    news_list += "#FreeBuf早报\n"
     try:
         rs1 = feedparser.parse(freebuf_url)
         length = len(rs1.entries)
@@ -89,23 +89,23 @@ def get_freebuf_news():
                             .replace(" ", "")
                     )
                     link4 = "\n" + title_f + "\n" + url_f + "\n"
-                    str_list += link4
+                    news_list += link4
                 else:
                     pass
             except Exception as e:
                 output("ERROR：{}".format(e))
                 break
-        if len(str_list) == 0:
+        if len(news_list) == 0:
             link6 = "\n今日暂无文章"
-            str_list += link6
+            news_list += link6
         else:
             pass
     except Exception as e:
         link6 = "\n今日暂无文章"
-        str_list += link6
+        news_list += link6
         output("ERROR：freebuf {}".format(e))
-    str_list += "\nCreated by zhizhuo \n{}".format(time.strftime("%Y-%m-%d %X"))
-    return str_list
+    #str_list += "\n{}".format(time.strftime("%Y-%m-%d %X"))
+    return news_list
 
 
 # 奇安信攻防社区
@@ -118,7 +118,7 @@ def get_qax_news():
         length = len(rs1.entries)
         for buf in range(length):
             try:
-                if str(time.strftime("%Y-%m-%d")) in str(rs1.entries[buf]["published"]):
+                if str((datetime.date.today() + datetime.timedelta(days=-1)).strftime("%Y-%m-%d")) in str(rs1.entries[buf]["published"]):
                     url_f = rs1.entries[buf]["link"]
                     title_f = rs1.entries[buf]["title_detail"]["value"]
                     link4 = "\n" + title_f + "\n" + url_f + "\n"
@@ -168,7 +168,7 @@ def get_anquanke_news():
         )
         for a in range(len(timelist)):
             try:
-                if time.strftime("%Y-%m-%d") in timelist[a]:
+                if str((datetime.date.today() + datetime.timedelta(days=-1)).strftime("%Y-%m-%d")) in timelist[a]:
                     link1 = str(newlist[a][1])
                     link2 = "https://www.anquanke.com" + str(newlist[a][0])
                     link3 = "\n" + str(link1) + "\n" + str(link2) + "\n"
@@ -195,9 +195,9 @@ def get_safety_news():
     global news_list
     news_list = ""
     get_xz_news()
-    # get_freebuf_news()
-    # get_qax_news()
+    get_freebuf_news()
+    get_qax_news()
     get_anquanke_news()
     output("获取成功")
-    news_list += "\nCreated by zhizhuo \n{}".format(time.strftime("%Y-%m-%d %X"))
+    news_list += " \n{}".format(time.strftime("%Y-%m-%d %X"))
     return news_list
