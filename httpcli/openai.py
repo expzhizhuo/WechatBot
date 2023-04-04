@@ -58,7 +58,7 @@ def OpenaiServer(msg=None, preset_map={}, old_chat={}, senderid=None,user_chat=[
                 top_p=1,
             )
             # msg = "来自openai回复结果：\n"
-            msg = remove_punctuation(response.choices[0].message.content.strip())
+            msg = remove_punctuation(response.choices[0].message.content.strip().replace('\n\n', '\n'))
             arr.append({"role": "assistant", "content": msg})
             print(arr)
             if senderid in user_chat:
