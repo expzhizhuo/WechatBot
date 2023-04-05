@@ -7,3 +7,4 @@ schedule==1.1.0
 pyfiglet==0.8.post1
 websocket-client==1.5.1
 beautifulsoup4==4.11.2
+colorama==0.4.6
