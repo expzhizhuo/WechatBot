@@ -360,7 +360,7 @@ def Touch_the_fish():
                 + str(salary_day)
         )
     epidemic_Day = "2019-12-16"
-    if int(time.strftime("%m")) > 10 and int(time.strftime("%d")) > 1:
+    if int(time.strftime("%m")) >= 10 and int(time.strftime("%d")) > 1:
         National_Day = str(int(time.strftime("%Y")) + 1) + "-10-01"
     else:
         National_Day = str(int(time.strftime("%Y"))) + "-10-01"
