@@ -211,7 +211,7 @@ def get_y4tacker_news():
                 # print(formatted_yesterday)
                 # print(time.strftime("%Y-%m-%d %H:%M:%S", rs1.entries[buf]["published_parsed"]))
                 if str(time.strftime("%Y-%m-%d")) in str(
-                        time.strftime("%Y-%m-%d %H:%M:%S", rs1.entries[buf]["published_parsed"])):
+                        time.strftime("%Y-%m-%d %H:%M:%S", rs1.entries[buf]["updated_parsed"])):
                     url_f = rs1.entries[buf]['links'][0]['href']
                     title_f = rs1.entries[buf]["title"]
                     link4 = "\n" + title_f + "\n" + url_f + "\n"
